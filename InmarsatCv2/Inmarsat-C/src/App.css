@@ -1,0 +1,151 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  list-style: none;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+.logo-icon{
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: 5;
+  
+}
+
+.Header {
+  background-color: var(--header_background);
+  color: var(--header_color);
+  height: 56px;
+  min-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Sidebar {
+  background-color: var(--header_background);
+  color: var(--header_color);
+  min-height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 16px;
+  position: relative;
+  width: 15%;
+}
+
+.App {
+  background-color: var(--body_background);
+  color: var(--body_color);
+  display:block;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.toggle-theme-btn {
+  bottom: 30px;
+  left: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 1rem;
+}
+
+.toggle {
+  margin-left: 10px !important;
+}
+
+.PageContent {
+  background-color: var(--body_background);
+  color: var(--body_color);
+  padding-top: 24px;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+}
+.Space {
+  background-color: var(--body_background);
+  color: var(--body_color);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.Title{
+  background-color: var(--body_background);
+  color: var(--body_color);
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-theme-btn {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 1rem;
+
+}
+
+.toggle {
+  margin-left: 10px;
+}
+
+.tabs {
+  background-color: var(--body_background);
+  color: var(--body_color);
+}
+
+.head-content {
+  font-weight: bold;
+  
+}
+.content {
+  height: 100%;
+  background-color: var(--header_background);
+  color: var(--header_color);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* .contents{
+ 
+} */
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--button_color) !important; 
+  font-weight: bold;
+}
+
+.ant-tabs-tab-btn {
+  color: var(--button_color) !important; 
+}
+
+.ant-tabs-ink-bar {
+  background:var(--button_background)!important;
+}
+
+.tabs-line{
+  margin-right: 24px;
+  display: flex;
+  flex-direction: column;
+}
