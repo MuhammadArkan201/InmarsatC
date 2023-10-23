@@ -1,5 +1,6 @@
 // import React from 'react';
-import "../../../../App.css";
+import "../../../../../App.css";
+import UTTerminalImage from "../../../../Img/UT-terminalBatam.jpeg"; // Make sure to adjust the image path
 
 function InfoTab() {
   const data = {
@@ -30,8 +31,14 @@ function InfoTab() {
   return (
     <div className="contents">
       <div className="content">
-        <div className="head-content">Device</div>
-        <div></div>
+        <div className="head-content">
+          Device
+        </div>
+        <div className="img-container">
+          {" "}
+          <img src={UTTerminalImage} alt="UT Terminal" />
+          <div></div>{" "}
+        </div>
       </div>
       <div className="content">
         <div className="head-content">Device Information</div>

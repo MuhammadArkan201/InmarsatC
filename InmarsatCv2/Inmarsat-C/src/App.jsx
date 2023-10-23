@@ -8,7 +8,7 @@ import PageContent from "./components/AppContent";
 function App() {
   return <div className="App" >
     
-    <Header/>
+   <div> <Header/> </div>
       <div className="Space" >
       <Sidebar></Sidebar>
       <PageContent></PageContent>

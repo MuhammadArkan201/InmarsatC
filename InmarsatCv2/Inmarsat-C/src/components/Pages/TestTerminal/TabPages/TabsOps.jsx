@@ -1,7 +1,9 @@
 import { Tabs } from "antd";
-import InfoTab from "./InfoTab";
+import InfoTab from "./InfoTab/InfoTab";
+import StatusTab from "./StatusTab/StatusTab";
+import SignalTab from "./SignalTab/SignalTab";
+import EgcTab from "./EgcTab/EgcTab";
 const { TabPane } = Tabs;
-
 
 function TabsOps() {
   return (
@@ -13,10 +15,14 @@ function TabsOps() {
           </div>
         </TabPane>
         <TabPane tab="Status" key="Statustab">
-          <div>tab content status tab</div>
+          <div>
+            <StatusTab />
+          </div>
         </TabPane>
         <TabPane tab="EGC" key="EGCtab">
-          <div>tab content EGC tab</div>
+          <div>
+            <EgcTab />
+          </div>
         </TabPane>
         <TabPane tab="Directory" key="Directorytab">
           <div>tab content Directory tab</div>
@@ -37,13 +43,13 @@ function TabsOps() {
           <div>tab content Config tab</div>
         </TabPane>
         <TabPane tab="Signal" key="Signaltab">
-          <div>tab content Signal tab</div>
+          <div>
+            <SignalTab />
+          </div>
         </TabPane>
       </Tabs>
-      
     </div>
-  )
+  );
 }
 
-export default TabsOps
-
+export default TabsOps;

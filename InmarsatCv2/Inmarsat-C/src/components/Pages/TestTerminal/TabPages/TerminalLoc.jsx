@@ -1,4 +1,4 @@
-import { Tabs, Typography, Select } from "antd";
+import { Select } from "antd";
 
 
 const handleChange = (value) => {
@@ -15,8 +15,9 @@ function TerminalLoc() {
             options={[
               { value: 'Batam', label: 'Batam' },
               { value: 'Burum', label: 'Burum' },
-              { value: 'Yiminghe', label: 'Yiminghe' },
-              { value: 'disabled', label: 'Disabled', disabled: true },
+              { value: 'Fucino', label: 'Fucino' },
+              { value: 'Paumalu', label: 'Paumalu' },
+              { value: 'Perth', label: 'Perth' },
             ]}
           />
       
