@@ -3,6 +3,7 @@ import "../../../../../App.css";
 import DropdownSignal from "./DropdownSignal";
 import DatePickerPopup from "../../../../Popup/DatePickerPopup";
 import SignalLevel from "./SignalLevel";
+import { Space } from "antd";
 
 function SignalTab() {
   return (
@@ -16,7 +17,10 @@ function SignalTab() {
           <DropdownSignal />
         </div>
         <div>
-          <SignalLevel />
+          <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+            {" "}
+            <SignalLevel />{" "}
+          </Space>
         </div>{" "}
       </div>
     </div>
