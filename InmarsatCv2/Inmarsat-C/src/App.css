@@ -204,3 +204,6 @@
   color: var(--button_color) !important;
 }
 
+.chart-container {
+  height:289px !important;
+}

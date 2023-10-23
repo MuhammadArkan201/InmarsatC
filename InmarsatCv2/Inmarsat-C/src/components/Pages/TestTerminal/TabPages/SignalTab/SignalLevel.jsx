@@ -1,6 +1,7 @@
-// import React from "react";
+import React from "react";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS } from "chart.js";
 import {
-  Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -9,16 +10,7 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-import { Bar } from "react-chartjs-2";
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 import "../../../../../App.css";
 
@@ -38,49 +30,47 @@ function SignalLevel() {
   const formattedDate = date.toLocaleDateString("en-US", optionsDate);
 
   const data = {
-    labels: [formattedDate],
+    labels: [formattedDate,formattedDate,formattedDate,formattedDate,formattedDate,formattedDate],
     datasets: [
       {
         label: "Signal Strength",
-        data: [5],
-        borderColor: "black",
-        borderWidth: "1px",
+        data: [5, 5, 5, 5, 5,5],
         backgroundColor: "#46B39E",
         stack: "stack1",
+        barPercentage: 1,
+        categoryPercentage:1,
       },
     ],
   };
 
   const options = {
-    indexAxis: "x",
-    responsive: true,
-    scales: {
-      x: {
-        categorySpacing: 0,
-        beginAtZero: true,
-      },
-      y: {
-        beginAtZero: true,
-        min: 1, // Set the minimum value on the y-axis
-        max: 6, // Set the maximum value on the y-axis
-        ticks: {
-          stepSize: 1, // Set the step size for the ticks
-        },
-      },
-    },
     plugins: {
       legend: {
         display: true,
-        position: "right",
+        position: "bottom",
       },
     },
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        beginAtZero: true,
+        categorySpacing: 0,
+      },
+      y: {
+        beginAtZero: true,
+        min: 1,
+        max: 6,
+        ticks: {
+          stepSize: 1,
+        },
+      },
+    },
+    indexAxis: "x",
+    responsive: true,
   };
 
   return (
-    <div>
-      <p>Timestamp: {formattedDate}</p>
-      <p>Signal Strength: {data.datasets[0].data[0]}</p>
-      <p>Raw Data: status -s</p>
+    <div className="chart-container">
       <Bar data={data} options={options} />
     </div>
   );
