@@ -185,7 +185,11 @@
 }
 
 .Preferred {
+  margin-top: 16px !important;
   width: 227px;
+  height: 48px;
+  border: 1.2px solid #555555 !important;
+  border-radius: 6px !important;
 }
 
 .datepicker-format {
@@ -205,5 +209,18 @@
 }
 
 .chart-container {
-  height:289px !important;
+  height:210px !important;
+  width: 998px !important;
+}
+
+.btn {
+  margin-left: 16px !important;
+  border: 1.2px solid #555555 !important;
+  height: 48px !important;
+  font-weight: bold !important;
+}
+
+.rangepickerformat {  
+  height: 48px !important;
+  border: 1.2px solid #555555 !important;
 }

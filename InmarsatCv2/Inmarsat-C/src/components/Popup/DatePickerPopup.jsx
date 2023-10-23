@@ -25,7 +25,7 @@ function DatePickerPopup() {
           setModalOpen(true);
         }}
       >
-        <RangePicker
+        <RangePicker className="rangepickerformat"
           showTime={{
             format: "HH:mm",
           }}
@@ -36,7 +36,7 @@ function DatePickerPopup() {
         />
       </button>
       {modalOpen && <Modal setOpenModal={setModalOpen} />}
-      <Button style={{ marginLeft: '4px' }}>Submit</Button>
+      <Button className="btn" style={{ marginLeft: '4px' }}>Submit</Button>
     </div>
   );
 }
