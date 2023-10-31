@@ -1,117 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../../../App.css";
 import { Button, Select } from "antd";
 
 function StatusTab() {
-  const initialData = {
-    error: "",
-    data: {
-      lastResponse: 1697159166,
-      sync: "Yes",
-      tdmType: "NCS",
-      tdmChannel: "12580",
-      currentChannel: "NCS",
-      currentProtocol: "Free",
-      tdmOrigin: "244 (Pacific)",
-      tdmFrameNumber: "457",
-      bbErrorRate: "0",
-      preferredOcean: "Pacific",
-    },
-  };
+  const [jsonData, setJsonData] = useState(null);
 
-  const [responseData, setResponseData] = useState(initialData);
-  const [selectedRegion, setSelectedRegion] = useState("Preferred Ocean Region");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "/datas/statusData/statustabbatamData.json"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setJsonData(data);
+      } catch (error) {
+        console.error(
+          "There has been a problem with your fetch operation:",
+          error
+        );
+      }
+    };
 
-  const statusItems = Object.entries(responseData.data).map(([key, value]) => (
-    <div key={key}>
-      <strong>{key}:</strong> {value}
-    </div>
-  ));
-
-  const lastResponse = responseData.data.lastResponse;
-  const sync = responseData.data.sync;
-  const tdmType = responseData.data.tdmType;
-  const tdmChannel = responseData.data.tdmChannel;
-  const currentChannel = responseData.data.currentChannel;
-  const currentProtocol = responseData.data.currentProtocol;
-  const tdmOrigin = responseData.data.tdmOrigin;
-  const tdmFrameNumber = responseData.data.tdmFrameNumber;
-  const bbErrorRate = responseData.data.bbErrorRate;
-  const preferredOcean = responseData.data.preferredOcean;
-
-  const handleRegionChange = (value) => {
-    setSelectedRegion(value);
-
-    let preferredOcean = "Pacific";
-
-    if (value === "West Atlantic") {
-      preferredOcean = "West Atlantic";
-    } else if (value === "East Atlantic") {
-      preferredOcean = "East Atlantic";
-    } else if (value === "Pacific") {
-      preferredOcean = "Pacific";
-    } else if (value === "Indian") {
-      preferredOcean = "Indian";
-    } else if (value === "None") {
-      preferredOcean = "None";
-    }
-
-    setResponseData({
-      error: "",
-      data: {
-        ...responseData.data,
-        preferredOcean,
-      },
-    });
-  };
+    fetchData();
+  }, []);
 
   return (
     <div>
       <div className="content">
         <div className="head-content">Device Status</div>
         <div>
-          <table className="tbl">
-            <tr>
-              <th>last Response</th>
-              <td>{lastResponse}</td>
-            </tr>
-            <tr>
-              <th>sync</th>
-              <td>{sync}</td>
-            </tr>
-            <tr>
-              <th>tdmType</th>
-              <td>{tdmType}</td>
-            </tr>
-            <tr>
-              <th>tdmChannel</th>
-              <td>{tdmChannel}</td>
-            </tr>
-            <tr>
-              <th>currentChannel</th>
-              <td>{currentChannel}</td>
-            </tr>
-            <tr>
-              <th>currentProtocol</th>
-              <td>{currentProtocol}</td>
-            </tr>
-            <tr>
-              <th>tdmOrigin</th>
-              <td>{tdmOrigin}</td>
-            </tr>
-            <tr>
-              <th>tdmFrameNumber</th>
-              <td>{tdmFrameNumber}</td>
-            </tr>
-            <tr>
-              <th>bbErrorRate</th>
-              <td>{bbErrorRate}</td>
-            </tr>
-            <tr>
-              <th>preferredOcean</th>
-              <td>{preferredOcean}</td>
-            </tr>
-          </table>
+          {jsonData && (
+            <table className="tbl">
+              {Object.entries(jsonData.data).map(([key, value]) => (
+                <tr key={key}>
+                  <th>{key}</th>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </table>
+          )}
         </div>
       </div>
       <div className="content">
@@ -122,9 +52,8 @@ function StatusTab() {
         </div>
         <Select
           className="Preferred"
-          value={selectedRegion}
+          value="Preferred Ocean Region"
           style={{ width: 227 }}
-          onChange={handleRegionChange}
           options={[
             {
               value: "Preferred Ocean Region",
