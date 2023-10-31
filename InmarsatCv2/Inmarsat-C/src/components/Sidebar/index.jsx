@@ -24,28 +24,14 @@ function Sidebar() {
       className="Sidebar"
       onClick={({ key }) => handleMenuItemClick(key)}
     >
-      <Menu.Item key="/sidebar1" icon={<MenuOutlined />}>
-        Sidebar 1
-      </Menu.Item>
-      <Menu.Item key="/sidebar2" icon={<AppstoreOutlined />}>
-        Sidebar 2
-      </Menu.Item>
-      <Menu.Item key="/sidebar3" icon={<StockOutlined />}>
-        Sidebar 3
-      </Menu.Item>
+      <Menu.Item key="/sidebar1" icon={<MenuOutlined />}></Menu.Item>
+      <Menu.Item key="/sidebar2" icon={<AppstoreOutlined />}></Menu.Item>
+      <Menu.Item key="/sidebar3" icon={<StockOutlined />}></Menu.Item>
       <Menu.Item key="/sidebar4">GX</Menu.Item>
-      <Menu.Item key="/sidebar5" icon={<BookOutlined />}>
-        Sidebar 5
-      </Menu.Item>
-      <Menu.Item key="/sidebar6" icon={<SearchOutlined />}>
-        Sidebar 6
-      </Menu.Item>
-      <Menu.Item key="/sidebar7" icon={<SettingOutlined />}>
-        Sidebar 7
-      </Menu.Item>
-      <Menu.Item key="/TestTerminal" icon={<PhoneOutlined />}>
-        Test Terminal
-      </Menu.Item>
+      <Menu.Item key="/sidebar5" icon={<BookOutlined />}></Menu.Item>
+      <Menu.Item key="/sidebar6" icon={<SearchOutlined />}></Menu.Item>
+      <Menu.Item key="/sidebar7" icon={<SettingOutlined />}></Menu.Item>
+      <Menu.Item key="/TestTerminal" icon={<PhoneOutlined />}></Menu.Item>
     </Menu>
   );
 }

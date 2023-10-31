@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "../../../../../App.css";
 import { Button, Select } from "antd";
 
@@ -7,7 +7,7 @@ function StatusTab() {
     error: "",
     data: {
       lastResponse: 1697159166,
-      sync: "yes",
+      sync: "Yes",
       tdmType: "NCS",
       tdmChannel: "12580",
       currentChannel: "NCS",
@@ -20,9 +20,7 @@ function StatusTab() {
   };
 
   const [responseData, setResponseData] = useState(initialData);
-  const [selectedRegion, setSelectedRegion] = useState(
-    "Preferred Ocean Region"
-  );
+  const [selectedRegion, setSelectedRegion] = useState("Preferred Ocean Region");
 
   const statusItems = Object.entries(responseData.data).map(([key, value]) => (
     <div key={key}>
@@ -30,11 +28,21 @@ function StatusTab() {
     </div>
   ));
 
+  const lastResponse = responseData.data.lastResponse;
+  const sync = responseData.data.sync;
+  const tdmType = responseData.data.tdmType;
+  const tdmChannel = responseData.data.tdmChannel;
+  const currentChannel = responseData.data.currentChannel;
+  const currentProtocol = responseData.data.currentProtocol;
+  const tdmOrigin = responseData.data.tdmOrigin;
+  const tdmFrameNumber = responseData.data.tdmFrameNumber;
+  const bbErrorRate = responseData.data.bbErrorRate;
+  const preferredOcean = responseData.data.preferredOcean;
+
   const handleRegionChange = (value) => {
     setSelectedRegion(value);
 
-    // Update the preferredOcean based on the selected region
-    let preferredOcean = "Pacific"; // Default value
+    let preferredOcean = "Pacific";
 
     if (value === "West Atlantic") {
       preferredOcean = "West Atlantic";
@@ -61,7 +69,50 @@ function StatusTab() {
     <div>
       <div className="content">
         <div className="head-content">Device Status</div>
-        <div>{statusItems}</div>
+        <div>
+          <table className="tbl">
+            <tr>
+              <th>last Response</th>
+              <td>{lastResponse}</td>
+            </tr>
+            <tr>
+              <th>sync</th>
+              <td>{sync}</td>
+            </tr>
+            <tr>
+              <th>tdmType</th>
+              <td>{tdmType}</td>
+            </tr>
+            <tr>
+              <th>tdmChannel</th>
+              <td>{tdmChannel}</td>
+            </tr>
+            <tr>
+              <th>currentChannel</th>
+              <td>{currentChannel}</td>
+            </tr>
+            <tr>
+              <th>currentProtocol</th>
+              <td>{currentProtocol}</td>
+            </tr>
+            <tr>
+              <th>tdmOrigin</th>
+              <td>{tdmOrigin}</td>
+            </tr>
+            <tr>
+              <th>tdmFrameNumber</th>
+              <td>{tdmFrameNumber}</td>
+            </tr>
+            <tr>
+              <th>bbErrorRate</th>
+              <td>{bbErrorRate}</td>
+            </tr>
+            <tr>
+              <th>preferredOcean</th>
+              <td>{preferredOcean}</td>
+            </tr>
+          </table>
+        </div>
       </div>
       <div className="content">
         <div className="head-content">Select a Region in the Ocean</div>

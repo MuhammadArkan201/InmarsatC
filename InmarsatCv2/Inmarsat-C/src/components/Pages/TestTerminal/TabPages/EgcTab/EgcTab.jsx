@@ -1,7 +1,7 @@
+import React from "react";
 import "../../../../../App.css";
-import { useState } from "react";
 import DatePickerPopup from "../../../../Popup/DatePickerPopup";
-
+import EgcTable from "./EgcTable";
 
 function EgcTab() {
   return (
@@ -11,11 +11,12 @@ function EgcTab() {
         <DatePickerPopup />
       </div>
       <div className="content">
-        <div className="head-content"></div>
-        <div></div>
+        <div className="head-content">Records</div>
+        <div>
+          <EgcTable></EgcTable>
+        </div>
       </div>
     </div>
   );
 }
-
 export default EgcTab;

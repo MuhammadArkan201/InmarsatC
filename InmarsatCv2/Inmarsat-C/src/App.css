@@ -35,22 +35,23 @@
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  top: 0; /* Stick to the top of the viewport */
-  z-index: 999; /* You can adjust the z-index value as needed */
+  top: 0;
 }
 
 
 .Sidebar {
   background-color: var(--header_background);
   color: var(--header_color);
+  
+  align-items: center;
   min-height: 100vh; 
   display: flex;
   flex-direction: column;
   gap: 5px;
   font-size: 16px;
   position: sticky;
-  top: 0; /* Stick to the top of the viewport */
-  width: 15%;
+  top: 0;
+  width: 77px;
 }
 
 .App {
@@ -135,10 +136,6 @@
   margin-bottom: 16px;
 }
 
-/* .contents{
- 
-} */
-
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: var(--button_color) !important; 
   font-weight: bold;
@@ -210,7 +207,7 @@
 
 .chart-container {
   height:210px !important;
-  width: 998px !important;
+  width: 100% !important;
 }
 
 .btn {
@@ -223,4 +220,33 @@
 .rangepickerformat {  
   height: 48px !important;
   border: 1.2px solid #555555 !important;
+}
+
+.tbl {
+  text-align: left;
+}
+
+.tbl td {
+  padding-left: 40px; 
+}
+
+.titletbl {
+  font-weight: bold;
+}
+
+
+
+.even-row {
+  background-color: rgba(85, 85, 85, 0.1);
+}
+
+.ant-table-container {
+  border-bottom: 1px solid black !important;
+  border-left: 1px solid black !important;
+}
+
+.ant-table-cell {
+  border-top: 1px solid black !important;
+  
+  border-right: 1px solid black !important;
 }
