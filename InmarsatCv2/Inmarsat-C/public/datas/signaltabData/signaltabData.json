@@ -1,0 +1,8 @@
+{
+    "error": "",
+    "data": {
+      "ts": 1697159325,
+      "signal": 5,
+      "raw": "status -s\n\nSignal strength : 5\ncan"
+    }
+  }
