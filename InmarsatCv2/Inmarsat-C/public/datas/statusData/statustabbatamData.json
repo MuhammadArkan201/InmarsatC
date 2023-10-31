@@ -1,0 +1,16 @@
+{
+    "error":"",
+    "data":{
+        "lastResponse":1697159166,
+        "sync":"Yes",
+        "tdmType":"NCS",
+        "tdmChannel":"12580",
+        "currentChannel":"NCS",
+        "currentProtocol":"Free",
+        "tdmOrigin":"244 (Pacific)",
+        "tdmFrameNumber":"457",
+        "bbErrorRate":"0",
+        "preferredOcean":"Pacific"
+        
+        }
+    }
