@@ -1,1 +1,125 @@
-{"error": "", "columns": ["les", "service", "priority", "lang", "timestamp", "bytes", "sequence", "error", "repetition", "filename"], "data": [[211, 31, 1, 0, 1698027720, 855, 16095, 0, 1, "EGC.759"], [203, 31, 1, 0, 1698028260, 2139, 19773, 0, 1, "EGC.760"], [230, 44, 2, 0, 1698036600, 543, 23779, 0, 8, "EGC.761"], [230, 44, 2, 0, 1698039660, 740, 23775, 0, 10, "EGC.762"], [212, 31, 1, 0, 1698040920, 550, 4826, 0, 9, "EGC.763"], [212, 31, 1, 0, 1698040920, 550, 4827, 0, 9, "EGC.764"], [211, 31, 1, 0, 1698044580, 1610, 16096, 0, 1, "EGC.765"], [203, 31, 1, 0, 1698045480, 1040, 19774, 0, 1, "EGC.766"], [211, 31, 1, 0, 1698049380, 797, 16097, 0, 1, "EGC.767"], [203, 31, 1, 0, 1698049560, 1879, 19775, 0, 1, "EGC.768"]]}
+{
+    "data": [
+        {
+          "les": 211,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698027720,
+          "bytes": 855,
+          "sequence": 16095,
+          "error": 0,
+          "repetition": 1,
+          "filename": "EGC.759"
+        },
+        {
+          "les": 203,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698028260,
+          "bytes": 2139,
+          "sequence": 19773,
+          "error": 0,
+          "repetition": 1,
+          "filename": "EGC.760"
+        },
+        {
+          "les": 230,
+          "service": 44,
+          "priority": 2,
+          "lang": 0,
+          "timestamp": 1698036600,
+          "bytes": 543,
+          "sequence": 23779,
+          "error": 0,
+          "repetition": 8,
+          "filename": "EGC.761"
+        },
+        {
+          "les": 230,
+          "service": 44,
+          "priority": 2,
+          "lang": 0,
+          "timestamp": 1698039660,
+          "bytes": 740,
+          "sequence": 23775,
+          "error": 0,
+          "repetition": 10,
+          "filename": "EGC.762"
+        },
+        {
+          "les": 212,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698040920,
+          "bytes": 550,
+          "sequence": 4826,
+          "error": 0,
+          "repetition": 9,
+          "filename": "EGC.763"
+        },
+        {
+          "les": 212,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698040920,
+          "bytes": 550,
+          "sequence": 4827,
+          "error": 0,
+          "repetition": 9,
+          "filename": "EGC.764"
+        },
+        {
+          "les": 211,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698044580,
+          "bytes": 1610,
+          "sequence": 16096,
+          "error": 0,
+          "repetition": 1,
+          "filename": "EGC.765"
+        },
+        {
+          "les": 203,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698045480,
+          "bytes": 5104050,
+          "sequence": 19774,
+          "error": 0,
+          "repetition": 1,
+          "filename": "EGC.766"
+        },
+        {
+          "les": 211,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698049380,
+          "bytes": 797,
+          "sequence": 16097,
+          "error": 0,
+          "repetition": 1,
+          "filename": "EGC.767"
+        },
+        {
+          "les": 203,
+          "service": 31,
+          "priority": 1,
+          "lang": 0,
+          "timestamp": 1698049560,
+          "bytes": 1879,
+          "sequence": 19775,
+          "error": 0,
+          "repetition": 1,
+          "filename": "EGC.768"
+        }
+      ]
+  }
+  
