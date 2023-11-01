@@ -1,16 +1,16 @@
 {
     "error":"",
     "data":{
-        "lastResponse":1697159166,
-        "sync":"Yes",
-        "tdmType":"NCS",
+        "Last Response":1697159166,
+        "Sync":"Yes",
+        "TDM Type":"NCS",
         "tdmChannel":"12580",
-        "currentChannel":"NCS",
-        "currentProtocol":"Free",
-        "tdmOrigin":"244 (Pacific)",
-        "tdmFrameNumber":"457",
-        "bbErrorRate":"0",
-        "preferredOcean":"Pacific"
+        "Current Channel":"NCS",
+        "Current Protocol":"Free",
+        "TDM Origin":"244 (Pacific)",
+        "TDM Frame Number":"457",
+        "BB Error Rate":"0",
+        "Preferred Ocean":"Pacific"
         
         }
     }

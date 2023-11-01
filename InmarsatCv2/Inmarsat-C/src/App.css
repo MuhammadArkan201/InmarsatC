@@ -42,7 +42,7 @@
 .Sidebar {
   background-color: var(--header_background);
   color: var(--header_color);
-  
+  text-align: center;
   align-items: center;
   min-height: 100vh; 
   display: flex;

@@ -15,6 +15,14 @@ function StatusTab() {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+
+        if (data.data["Last Response"]) {
+          const lastResponse = data.data["Last Response"];
+          const lastResponseUTC = getUTCDate(lastResponse);
+          data.data["Last Response (UTC)"] = lastResponseUTC;
+          delete data.data["Last Response"]; // Remove the original "Last Response"
+        }
+
         setJsonData(data);
       } catch (error) {
         console.error(
@@ -27,6 +35,11 @@ function StatusTab() {
     fetchData();
   }, []);
 
+  const getUTCDate = (epochTimestamp) => {
+    const date = new Date(epochTimestamp * 1000);
+    return date.toUTCString();
+  };
+
   return (
     <div>
       <div className="content">
@@ -34,12 +47,19 @@ function StatusTab() {
         <div>
           {jsonData && (
             <table className="tbl">
-              {Object.entries(jsonData.data).map(([key, value]) => (
-                <tr key={key}>
-                  <th>{key}</th>
-                  <td>{value}</td>
-                </tr>
-              ))}
+              <tr>
+                <th>Last Response (UTC)</th>
+                <td>{jsonData.data["Last Response (UTC)"]}</td>
+              </tr>
+
+              {Object.entries(jsonData.data)
+                .filter(([key]) => key !== "Last Response (UTC)")
+                .map(([key, value]) => (
+                  <tr key={key}>
+                    <th>{key}</th>
+                    <td>{value}</td>
+                  </tr>
+                ))}
             </table>
           )}
         </div>

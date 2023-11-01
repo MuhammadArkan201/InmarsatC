@@ -1,18 +1,18 @@
 {
     "error": "",
     "data": {
-      "serialNumber": "21163457",
-      "terminalType": "Inmarsat-C Transceiver",
-      "mobileNumber": "400022211",
-      "mobileType": "TT-3027C SOLAS Maritime",
-      "ISNnumber": "4TT094ac823c",
-      "HWid": "1",
-      "latitude": "01 04 95 N",
-      "longitude": "104 01 76 E",
-      "altitude": "410",
-      "GPStime": "21:04:05 UTC",
-      "isSerialConnected": "True",
-      "hostUptime": 42498717,
-      "applicationUptime": 19848069
+      "Serial Number": "21163457",
+      "Terminal Type": "Inmarsat-C Transceiver",
+      "Mobile Number": "400022211",
+      "Mobile Type": "TT-3027C SOLAS Maritime",
+      "ISN Number": "4TT094ac823c",
+      "HW ID": "1",
+      "Latitude": "01 04 95 N",
+      "Longitude": "104 01 76 E",
+      "Altitude": "410",
+      "GPS Time": "21:04:05 UTC",
+      "Is Serial Connected": "True",
+      "Host Uptime": 42498717,
+      "Application Uptime": 19848069
     }
   }
