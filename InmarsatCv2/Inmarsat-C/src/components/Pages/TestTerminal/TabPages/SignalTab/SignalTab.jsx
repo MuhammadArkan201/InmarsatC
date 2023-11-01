@@ -5,7 +5,7 @@ import DatePickerPopup from "../../../../Popup/DatePickerPopup";
 import SignalLevel from "./SignalLevel";
 import { Space } from "antd";
 
-function SignalTab() {
+function SignalTab( ) {
   return (
     <div className="contents">
       <div className="content">

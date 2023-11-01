@@ -1,4 +1,5 @@
 import { Tabs } from "antd";
+import { useState, useEffect } from "react";
 import InfoTab from "./InfoTab/InfoTab";
 import StatusTab from "./StatusTab/StatusTab";
 import SignalTab from "./SignalTab/SignalTab";
@@ -6,6 +7,23 @@ import EgcTab from "./EgcTab/EgcTab";
 const { TabPane } = Tabs;
 
 function TabsOps() {
+  const [signalValue, setSignalValue] = useState(null);
+
+  useEffect(() => {
+    const fetchSignalData = async () => {
+      try {
+        const response = await fetch("/datas/signaltabData/signaltabData.json");
+        const jsonData = await response.json();
+        const signal = jsonData.data.signal;
+        setSignalValue(signal);
+      } catch (error) {
+        console.error("Error fetching signal data:", error);
+      }
+    };
+
+    fetchSignalData();
+  }, []);
+
   return (
     <div>
       <Tabs className="tabs">
@@ -42,7 +60,7 @@ function TabsOps() {
         <TabPane tab="Config" key="Configtab">
           <div>tab content Config tab</div>
         </TabPane>
-        <TabPane tab="Signal" key="Signaltab">
+        <TabPane tab={`Signal: ${signalValue}`} key="Signaltab">
           <div>
             <SignalTab />
           </div>
