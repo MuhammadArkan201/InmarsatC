@@ -48,7 +48,7 @@ function StatusTab() {
           {jsonData && (
             <table className="tbl">
               <tr>
-                <th>Last Response (UTC)</th>
+                <th>Last Response</th>
                 <td>{jsonData.data["Last Response (UTC)"]}</td>
               </tr>
 
