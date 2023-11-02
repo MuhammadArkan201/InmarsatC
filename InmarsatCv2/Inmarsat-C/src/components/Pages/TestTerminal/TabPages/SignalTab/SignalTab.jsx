@@ -1,16 +1,16 @@
 import "../../../../../App.css";
 
 import DropdownSignal from "./DropdownSignal";
-import DatePickerPopup from "../../../../Popup/DatePickerPopup";
+import PopupSignal from "../../../../Popup/PopupSignal";
 import SignalLevel from "./SignalLevel";
 import { Space } from "antd";
 
-function SignalTab( ) {
+function SignalTab() {
   return (
     <div className="contents">
       <div className="content">
         <div className="head-content">Device Signal</div>
-        <DatePickerPopup />
+        <PopupSignal />
       </div>
       <div className="content">
         <div className="head-content">

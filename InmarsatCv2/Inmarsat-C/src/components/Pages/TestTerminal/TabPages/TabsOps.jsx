@@ -4,6 +4,7 @@ import InfoTab from "./InfoTab/InfoTab";
 import StatusTab from "./StatusTab/StatusTab";
 import SignalTab from "./SignalTab/SignalTab";
 import EgcTab from "./EgcTab/EgcTab";
+import DirectoryTab from "./DirectoryTab/DirectoryTab";
 const { TabPane } = Tabs;
 
 function TabsOps() {
@@ -43,7 +44,9 @@ function TabsOps() {
           </div>
         </TabPane>
         <TabPane tab="Directory" key="Directorytab">
-          <div>tab content Directory tab</div>
+          <div>
+            <DirectoryTab />
+          </div>
         </TabPane>
         <TabPane tab="Tx History" key="Tx Historytab">
           <div>tab content Tx History tab</div>

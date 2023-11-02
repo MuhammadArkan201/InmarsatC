@@ -1,6 +1,5 @@
   import React, { useState, useEffect } from "react";
   import { Table, Modal } from "antd";
-  import "./modal.css";
   import "../../../../../App.css";
   import moment from "moment";
 
@@ -8,7 +7,7 @@
     const [open, setOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [apiResponseData, setApiResponseData] = useState({ data: [] });
-  
+
     const convertPriority = (priority) => {
       if (priority === 1) {
         return "Safety";
@@ -16,6 +15,10 @@
         return "Urgency";
       }
       return priority;
+    };
+
+    const convertTimestamp = (epochTime) => {
+      return moment.unix(epochTime).format("YYYY-MM-DD HH:mm");
     };
 
     const columns = [
@@ -48,7 +51,7 @@
         dataIndex: "timestamp",
         key: "timestamp",
         width: 220,
-        render: (text) => moment(text).format("YYYY-MM-DD HH:mm"),
+        render: (text) => convertTimestamp(text),
       },
       {
         title: "Bytes",
@@ -61,7 +64,7 @@
         dataIndex: "sequence",
         key: "sequence",
         width: 130,
-        render: (text) => convertPriority(text), // Convert sequence to corresponding text
+        render: (text) => convertPriority(text),
       },
       {
         title: "Error",
@@ -115,11 +118,13 @@
           const response = await fetch("/datas/egctabData/egctabData.json");
           const jsonData = await response.json();
           console.log("Fetched Data:", jsonData); // Log fetched data
-          const dataWithConvertedSequence = jsonData.data.map((record, index) => ({
-            ...record,
-            key: record.filename || index,
-            priority: convertPriority(record.priority), 
-          }));
+          const dataWithConvertedSequence = jsonData.data.map(
+            (record, index) => ({
+              ...record,
+              key: record.filename || index,
+              priority: convertPriority(record.priority),
+            })
+          );
           console.log("Data with Converted Sequence:", dataWithConvertedSequence); // Log after conversion
           setApiResponseData({ data: dataWithConvertedSequence });
         } catch (error) {
@@ -127,17 +132,22 @@
           setApiResponseData({ data: [{ error: "Error fetching data" }] });
         }
       };
-  
+
       fetchJsonData();
     }, []);
 
     const modalContent = selectedRecord ? (
       <div>
         <p>
-          LES {selectedRecord.les} - {selectedRecord.message?.area} -{" "}
-          {selectedRecord.message?.message}
+          LES {selectedRecord.les} - {selectedRecord.message?.msg} - {selectedRecord.message?.area} -{" "}
+          {selectedRecord.message?.message.split("\n").map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
         </p>
-
+    
         {selectedRecord.error && (
           <div>
             <h3>Error Message</h3>
@@ -146,6 +156,7 @@
         )}
       </div>
     ) : null;
+    
 
     const totalRecords =
       apiResponseData.count ||
@@ -173,6 +184,7 @@
             rowClassName={(record, index) => (index % 2 === 0 ? "even-row" : "")}
           />
           <Modal
+          className="msg-popup-modal"
             title="Message"
             open={open}
             onCancel={handleModalCancel}

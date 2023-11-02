@@ -6,11 +6,10 @@ function StatusTab() {
   const [jsonData, setJsonData] = useState(null);
 
   useEffect(() => {
+    console.log("Fetching data...");
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "/datas/statusData/statustabbatamData.json"
-        );
+        const response = await fetch("/datas/statusData/statustabbatamData.json");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -20,15 +19,12 @@ function StatusTab() {
           const lastResponse = data.data["Last Response"];
           const lastResponseUTC = getUTCDate(lastResponse);
           data.data["Last Response (UTC)"] = lastResponseUTC;
-          delete data.data["Last Response"]; // Remove the original "Last Response"
+          delete data.data["Last Response"];
         }
 
         setJsonData(data);
       } catch (error) {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
+        console.error("There has been a problem with your fetch operation:", error);
       }
     };
 
@@ -51,7 +47,6 @@ function StatusTab() {
                 <th>Last Response</th>
                 <td>{jsonData.data["Last Response (UTC)"]}</td>
               </tr>
-
               {Object.entries(jsonData.data)
                 .filter(([key]) => key !== "Last Response (UTC)")
                 .map(([key, value]) => (
@@ -67,18 +62,14 @@ function StatusTab() {
       <div className="content">
         <div className="head-content">Select a Region in the Ocean</div>
         <div>
-          Please select your preferred ocean region to set specific parameters,
-          preferences, or configurations.
+          Please select your preferred ocean region to set specific parameters, preferences, or configurations.
         </div>
         <Select
           className="Preferred"
           value="Preferred Ocean Region"
           style={{ width: 227 }}
           options={[
-            {
-              value: "Preferred Ocean Region",
-              label: "Preferred Ocean Region",
-            },
+            { value: "Preferred Ocean Region", label: "Preferred Ocean Region" },
             { value: "West Atlantic", label: "West Atlantic" },
             { value: "East Atlantic", label: "East Atlantic" },
             { value: "Pacific", label: "Pacific" },
