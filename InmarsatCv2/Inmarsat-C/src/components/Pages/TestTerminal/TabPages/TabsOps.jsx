@@ -5,6 +5,8 @@ import StatusTab from "./StatusTab/StatusTab";
 import SignalTab from "./SignalTab/SignalTab";
 import EgcTab from "./EgcTab/EgcTab";
 import DirectoryTab from "./DirectoryTab/DirectoryTab";
+import TerminalLoc from "./TerminalLoc";
+
 const { TabPane } = Tabs;
 
 function TabsOps() {
@@ -22,12 +24,12 @@ function TabsOps() {
       }
     };
 
-    fetchSignalData();
+    return () => fetchSignalData();
   }, []);
 
   return (
     <div>
-      <Tabs className="tabs">
+      <Tabs className="tabs" tabBarExtraContent={<TerminalLoc />}>
         <TabPane tab="Info" key="Infotab" className="Infotab">
           <div>
             <InfoTab />

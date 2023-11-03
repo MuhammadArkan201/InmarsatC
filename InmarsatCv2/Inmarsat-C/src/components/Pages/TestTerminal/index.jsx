@@ -8,7 +8,6 @@ function TestTerminal() {
     <div className="tabs-line">
       <div>
         <Typography.Text className="Title">Test Terminal</Typography.Text>
-        <TerminalLoc />
       </div>
       <div>
         <TabsOps />

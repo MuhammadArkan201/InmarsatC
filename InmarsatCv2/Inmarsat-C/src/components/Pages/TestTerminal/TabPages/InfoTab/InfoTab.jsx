@@ -6,26 +6,28 @@ function InfoTab() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!jsonData && !loading) {
-      const fetchInfoData = async () => {
-        try {
-          setLoading(true);
-          const response = await fetch("/datas/infotabData/infotabbatamdata.json");
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await response.json();
-          setJsonData(data);
-        } catch (error) {
-          console.error("There has been a problem with your fetch operation:", error);
-        } finally {
-          setLoading(false);
+    const fetchJsonData = async () => {
+      try {
+        const response = await fetch(
+          "/datas/infotabData/infotabbatamdata.json"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
         }
-      };
-      
-      fetchInfoData();
-    }
-  }, [jsonData, loading]);
+        const data = await response.json();
+        setJsonData(data);
+      } catch (error) {
+        console.error(
+          "There has been a problem with your fetch operation:",
+          error
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return () => fetchJsonData();
+  }, []);
 
   return (
     <div className="contents">

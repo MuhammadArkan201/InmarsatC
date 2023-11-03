@@ -35,7 +35,7 @@ function SignalLevel() {
       }
     };
 
-    fetchData();
+    return () => fetchData();
   }, []);
 
   const epochTimestamp = jsonData?.data?.ts || 1697159325;
