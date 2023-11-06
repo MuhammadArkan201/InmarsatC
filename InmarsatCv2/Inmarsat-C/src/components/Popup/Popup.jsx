@@ -4,7 +4,7 @@ import { Button, Modal, DatePicker, Radio, Space, Select } from "antd";
 
 const { RangePicker } = DatePicker;
 
-const Popup = () => {
+const Popup = ({ onShowTable }) => {
   const [setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [dateValue, setDateValue] = useState(null); // State to store the selected date
@@ -36,6 +36,7 @@ const Popup = () => {
     if (dateValue) {
       setOuterDate(dateValue);
       handleCancel();
+      onShowTable(); // Call the callback function to show the table
     }
   };
 
@@ -135,7 +136,9 @@ const Popup = () => {
           </div>
         </Radio.Group>
       </Modal>
-      <Button className="btn">Submit</Button>
+      <Button className="btn" onClick={onShowTable}>
+        Submit
+      </Button>
     </>
   );
 };
