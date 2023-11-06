@@ -34,12 +34,12 @@ const Popup = () => {
 
   const onApply = () => {
     if (dateValue) {
-      setOuterDate(dateValue); // Apply the selected date to the RangePicker outside the Modal
-      handleCancel(); // Close the Modal after applying the date
+      setOuterDate(dateValue);
+      handleCancel();
     }
   };
 
-  const onDatePickerChange = (date, dateString) => {
+  const onDatePickerChange = (date) => {
     setDateValue(date);
   };
 
@@ -51,7 +51,7 @@ const Popup = () => {
           format: "HH:mm",
         }}
         format="YYYY-MM-DD HH:mm"
-        value={outerDate} // Set the value of the RangePicker outside the Modal
+        value={outerDate}
         onOk={handleOk}
         onClick={showModal}
         open={false}
@@ -68,7 +68,7 @@ const Popup = () => {
             className="popupbtn"
             key="submit"
             type="primary"
-            onClick={onApply} // Function to apply the selected date to the RangePicker
+            onClick={onApply}
           >
             Apply
           </Button>,
@@ -101,7 +101,6 @@ const Popup = () => {
                   },
                 ]}
               />
-
             </Space>
           </div>
           <div className="radiobtn">
