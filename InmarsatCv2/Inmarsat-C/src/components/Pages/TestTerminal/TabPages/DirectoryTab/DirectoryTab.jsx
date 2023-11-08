@@ -1,13 +1,13 @@
 import React from "react";
 import "../../../../../App.css";
-import Popup from "../../../../Popup/Popup";
+import PopupSignal from "../../../../Popup/PopupSignal";
 
 function DirectoryTab() {
   return (
     <div className="contents">
       <div className="content">
         <div className="head-content">Device Directory</div>
-        <Popup/>
+        <PopupSignal/>
       </div>
       <div className="content">
         <div className="head-content">Records</div>

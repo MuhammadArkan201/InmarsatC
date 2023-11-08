@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Table, Modal } from "antd";
 import "../../../../../App.css";
 import moment from "moment";
+import PropTypes from "prop-types";
 
-const EgcTable = () => {
+const EgcTable = ({ rangePickerValue, tableData }) => {
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [apiResponseData, setApiResponseData] = useState({ data: [] });
@@ -26,68 +27,57 @@ const EgcTable = () => {
       title: "Les",
       dataIndex: "les",
       key: "les",
-      width: 60,
     },
     {
       title: "Service",
       dataIndex: "service",
       key: "service",
-      width: 380,
     },
     {
       title: "Priority",
       dataIndex: "priority",
       key: "priority",
-      width: 90,
     },
     {
       title: "Lang",
       dataIndex: "lang",
       key: "lang",
-      width: 90,
     },
     {
       title: "Timestamp",
       dataIndex: "timestamp",
       key: "timestamp",
-      width: 220,
       render: (text) => convertTimestamp(text),
     },
     {
       title: "Bytes",
       dataIndex: "bytes",
       key: "bytes",
-      width: 100,
     },
     {
       title: "Sequence",
       dataIndex: "sequence",
       key: "sequence",
-      width: 130,
       render: (text) => convertPriority(text),
     },
     {
       title: "Error",
       dataIndex: "error",
       key: "error",
-      width: 90,
     },
     {
       title: "Repetition",
       dataIndex: "repetition",
       key: "repetition",
-      width: 90,
     },
     {
       title: "Filename",
       dataIndex: "filename",
       key: "filename",
-      width: 100,
     },
     {
       title: "Data",
       key: "operation",
-      width: 70,
       render: (_, record) => (
         <a onClick={() => handleDataClick(record)}>Read</a>
       ),
@@ -113,28 +103,23 @@ const EgcTable = () => {
   };
 
   useEffect(() => {
-    const fetchJsonData = async () => {
-      try {
-        const response = await fetch("/datas/egctabData/egctabData.json");
-        const jsonData = await response.json();
-        console.log("Fetched Data:", jsonData); // Log fetched data
-        const dataWithConvertedSequence = jsonData.data.map(
-          (record, index) => ({
-            ...record,
-            key: record.filename || index,
-            priority: convertPriority(record.priority),
-          })
-        );
-        console.log("Data with Converted Sequence:", dataWithConvertedSequence); // Log after conversion
-        setApiResponseData({ data: dataWithConvertedSequence });
-      } catch (error) {
-        console.error("Error fetching JSON data:", error);
-        setApiResponseData({ data: [{ error: "Error fetching data" }] });
-      }
-    };
-
-    return () => fetchJsonData();
-  }, []);
+    console.log("Selected date range: ", rangePickerValue); // Check the selected date range
+  
+    const filteredData = tableData.filter((item) => {
+      const timestamp = item.timestamp;
+      const [startDate, endDate] = rangePickerValue;
+  
+      console.log("Timestamp, Start, End: ", timestamp, startDate.unix(), endDate.unix()); // Verify timestamp and range values
+  
+      // Filter the data based on the date range selected
+      return timestamp >= startDate.unix() && timestamp <= endDate.unix();
+    });
+  
+    console.log("Filtered Data: ", filteredData); // Log the filtered data
+  
+    setApiResponseData({ data: filteredData });
+  
+  }, [rangePickerValue, tableData]);
 
   const modalContent = selectedRecord ? (
     <div>
@@ -172,8 +157,8 @@ const EgcTable = () => {
             return col;
           })}
           bordered={true}
-          dataSource={apiResponseData.data}
-          pagination={{ pageSize: 10, position: ["bottomCenter"] }}
+          dataSource={apiResponseData.data} // Update this line
+          pagination={{ pageSize: 5, position: ["bottomCenter"] }}
           rowClassName={(record, index) => (index % 2 === 0 ? "even-row" : "")}
         />
         <Modal
@@ -188,6 +173,11 @@ const EgcTable = () => {
       </div>
     </div>
   );
+};
+
+EgcTable.propTypes = {
+  rangePickerValue: PropTypes.array.isRequired,
+  tableData: PropTypes.array.isRequired,
 };
 
 export default EgcTable;

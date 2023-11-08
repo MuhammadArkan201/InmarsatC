@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import "../../App.css";
+import PropTypes from 'prop-types';
 import { Button, Modal, DatePicker, Radio, Space, Select } from "antd";
 
 const { RangePicker } = DatePicker;
 
-const Popup = ({ onShowTable }) => {
-  const [setLoading] = useState(false);
+const Popup = ({ onShowTable, onRangePickerChange}) => {
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [dateValue, setDateValue] = useState(null); // State to store the selected date
+  const [dateValue, setDateValue] = useState(null);
+  const [radioValue, setRadioValue] = useState(1);
+  const [outerDate, setOuterDate] = useState(null);
 
   const showModal = () => {
     setOpen(true);
@@ -25,9 +28,6 @@ const Popup = ({ onShowTable }) => {
     setOpen(false);
   };
 
-  const [radioValue, setRadioValue] = useState(1);
-  const [outerDate, setOuterDate] = useState(null); // State to hold the value of the RangePicker outside the Modal
-
   const onChange = (e) => {
     setRadioValue(e.target.value);
   };
@@ -36,7 +36,9 @@ const Popup = ({ onShowTable }) => {
     if (dateValue) {
       setOuterDate(dateValue);
       handleCancel();
-      onShowTable(); // Call the callback function to show the table
+      onShowTable();
+      onRangePickerChange(dateValue);
+    // Send the selected date range for filtering
     }
   };
 
@@ -46,16 +48,15 @@ const Popup = ({ onShowTable }) => {
 
   return (
     <>
-      <RangePicker
+       <RangePicker
+        key="rangePickerKey"
         className="rangepickerformat"
-        showTime={{
-          format: "HH:mm",
-        }}
+        showTime={{ format: "HH:mm" }}
         format="YYYY-MM-DD HH:mm"
         value={outerDate}
-        onOk={handleOk}
-        onClick={showModal}
+        onOpenChange={showModal}
         open={false}
+        onChange={onDatePickerChange}
       />
 
       <Modal
@@ -136,11 +137,17 @@ const Popup = ({ onShowTable }) => {
           </div>
         </Radio.Group>
       </Modal>
-      <Button className="btn" onClick={onShowTable}>
+      <Button className="btn" onClick={onApply}>
         Submit
       </Button>
     </>
   );
+};
+
+Popup.propTypes = {
+  onShowTable: PropTypes.func.isRequired,
+  onRangePickerChange: PropTypes.func.isRequired,
+  onDataFilter: PropTypes.func.isRequired,
 };
 
 export default Popup;
