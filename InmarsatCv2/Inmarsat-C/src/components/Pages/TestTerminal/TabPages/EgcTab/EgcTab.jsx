@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../../../../../App.css";
 import Popup from "../../../../Popup/Popup";
 import EgcTable from "./EgcTable";
@@ -8,20 +8,7 @@ const EgcTab = () => {
   const [tableData, setTableData] = useState([]);
   const [rangePickerValue, setRangePickerValue] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filteredData, setFilteredData] = useState([]);
-
-  const handleShowTable = () => {
-    setShowTable(true);
-  };
-
-  const handleRangePickerChange = (value) => {
-    setRangePickerValue(value);
-    filterData(value); // Filter data whenever range picker value changes
-  };
-
-  const handleDataFilter = (selectedRange) => {
-    filterData(selectedRange);
-  };
+  const [setFilteredData] = useState([]);
 
   const filterData = (selectedRange) => {
     if (selectedRange.length === 2) {

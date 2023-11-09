@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Modal } from "antd";
-import "../../../../../App.css";
+import "./egcTable.css";
 import moment from "moment";
 import PropTypes from "prop-types";
 
@@ -37,6 +37,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       title: "Priority",
       dataIndex: "priority",
       key: "priority",
+      render: (text) => convertPriority(text),
     },
     {
       title: "Lang",
@@ -58,7 +59,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       title: "Sequence",
       dataIndex: "sequence",
       key: "sequence",
-      render: (text) => convertPriority(text),
+      
     },
     {
       title: "Error",
@@ -160,6 +161,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
           dataSource={apiResponseData.data} // Update this line
           pagination={{ pageSize: 5, position: ["bottomCenter"] }}
           rowClassName={(record, index) => (index % 2 === 0 ? "even-row" : "")}
+          scroll={{ x: 768 }} // Horizontal scroll at 768px screen width
         />
         <Modal
           className="msg-popup-modal"

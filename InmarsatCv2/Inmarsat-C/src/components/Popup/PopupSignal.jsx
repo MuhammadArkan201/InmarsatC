@@ -1,13 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../../App.css";
-import { Button, Modal, DatePicker, Radio, Space, Select, InputNumber } from "antd";
+import PropTypes from "prop-types";
+import {
+  Button,
+  Modal,
+  DatePicker,
+  Radio,
+  Space,
+  Select,
+  InputNumber,
+} from "antd";
 
 const { RangePicker } = DatePicker;
 
-const PopupSignal = () => {
-  const [setLoading] = useState(false);
+const PopupSignal = ({ onRangePickerChange }) => {
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [dateValue, setDateValue] = useState(null); // State to store the selected date
+  const [dateValue, setDateValue] = useState(null);
+  const [radioValue, setRadioValue] = useState(1);
+  const [outerDate, setOuterDate] = useState(null);
   const [resolution, setResolution] = useState(null); // State to hold the resolution value
 
   const showModal = () => {
@@ -26,27 +37,24 @@ const PopupSignal = () => {
     setOpen(false);
   };
 
-  const [radioValue, setRadioValue] = useState(1);
-  const [outerDate, setOuterDate] = useState(null); // State to hold the value of the RangePicker outside the Modal
-
   const onChange = (e) => {
     setRadioValue(e.target.value);
   };
 
   const onApply = () => {
     if (dateValue) {
-      setOuterDate(dateValue); // Apply the selected date to the RangePicker outside the Modal
-      handleCancel(); // Close the Modal after applying the date
+      setOuterDate(dateValue);
+      handleCancel();
+      onRangePickerChange(dateValue);
     }
   };
 
-  const onDatePickerChange = (date, dateString) => {
+  const onDatePickerChange = (date) => {
     setDateValue(date);
   };
 
   const onChangeNumber = (value) => {
     console.log("changed", value);
-    // Handle the input change and set the resolution value
     setResolution(value);
   };
 
@@ -58,12 +66,11 @@ const PopupSignal = () => {
           format: "HH:mm",
         }}
         format="YYYY-MM-DD HH:mm"
-        value={outerDate} // Set the value of the RangePicker outside the Modal
+        value={outerDate}
         onOk={handleOk}
         onClick={showModal}
         open={false}
       />
-
       <Modal
         className="popup-modal"
         open={open}
@@ -75,7 +82,7 @@ const PopupSignal = () => {
             className="popupbtn"
             key="submit"
             type="primary"
-            onClick={onApply} // Function to apply the selected date to the RangePicker
+            onClick={onApply}
           >
             Apply
           </Button>,
@@ -158,9 +165,15 @@ const PopupSignal = () => {
           </div>
         </Radio.Group>
       </Modal>
-      <Button className="btn">Submit</Button>
+      <Button className="btn" onClick={onApply}>
+        Submit
+      </Button>
     </>
   );
+};
+
+PopupSignal.propTypes = {
+  onRangePickerChange: PropTypes.func.isRequired,
 };
 
 export default PopupSignal;

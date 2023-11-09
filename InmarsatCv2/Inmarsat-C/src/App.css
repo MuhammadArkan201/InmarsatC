@@ -223,35 +223,6 @@
   border: 1.2px solid #555555 !important;
 }
 
-.tbl {
-  text-align: left;
-}
-
-.tbl td {
-  padding-left: 40px; 
-}
-
-.titletbl {
-  font-weight: bold;
-}
-
-
-
-.even-row {
-  background-color: rgba(85, 85, 85, 0.1);
-}
-
-.ant-table-container {
-  border-bottom: 1px solid black !important;
-  border-left: 1px solid black !important;
-}
-
-.ant-table-cell {
-  border-top: 1px solid black !important;
-  
-  border-right: 1px solid black !important;
-}
-
 .popup-modal {
   max-width: 500px;
   width: 100%;

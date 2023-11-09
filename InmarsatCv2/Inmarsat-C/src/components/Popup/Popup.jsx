@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import "../../App.css";
 import PropTypes from 'prop-types';
 import { Button, Modal, DatePicker, Radio, Space, Select } from "antd";
@@ -6,7 +6,7 @@ import { Button, Modal, DatePicker, Radio, Space, Select } from "antd";
 const { RangePicker } = DatePicker;
 
 const Popup = ({ onShowTable, onRangePickerChange}) => {
-  const [loading, setLoading] = useState(false);
+  const [setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [dateValue, setDateValue] = useState(null);
   const [radioValue, setRadioValue] = useState(1);
@@ -147,7 +147,6 @@ const Popup = ({ onShowTable, onRangePickerChange}) => {
 Popup.propTypes = {
   onShowTable: PropTypes.func.isRequired,
   onRangePickerChange: PropTypes.func.isRequired,
-  onDataFilter: PropTypes.func.isRequired,
 };
 
 export default Popup;
