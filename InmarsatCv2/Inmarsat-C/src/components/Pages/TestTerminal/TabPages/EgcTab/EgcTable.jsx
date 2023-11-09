@@ -37,6 +37,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       title: "Priority",
       dataIndex: "priority",
       key: "priority",
+      width: '10%',
       render: (text) => convertPriority(text),
     },
     {
@@ -54,6 +55,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       title: "Bytes",
       dataIndex: "bytes",
       key: "bytes",
+      width: '10%',
     },
     {
       title: "Sequence",

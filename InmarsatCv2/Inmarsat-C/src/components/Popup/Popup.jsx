@@ -1,12 +1,11 @@
-import  { useState } from "react";
+import { useState } from "react";
 import "../../App.css";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { Button, Modal, DatePicker, Radio, Space, Select } from "antd";
 
 const { RangePicker } = DatePicker;
 
-const Popup = ({ onShowTable, onRangePickerChange}) => {
-  const [setLoading] = useState(false);
+const Popup = ({ onShowTable, onRangePickerChange }) => {
   const [open, setOpen] = useState(false);
   const [dateValue, setDateValue] = useState(null);
   const [radioValue, setRadioValue] = useState(1);
@@ -17,11 +16,7 @@ const Popup = ({ onShowTable, onRangePickerChange}) => {
   };
 
   const handleOk = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setOpen(false);
-    }, 3000);
+    setOpen(false);
   };
 
   const handleCancel = () => {
@@ -36,9 +31,14 @@ const Popup = ({ onShowTable, onRangePickerChange}) => {
     if (dateValue) {
       setOuterDate(dateValue);
       handleCancel();
+      // You might perform other operations here
+    }
+  };
+
+  const onSubmit = async () => {
+    if (dateValue) {
       onShowTable();
       onRangePickerChange(dateValue);
-    // Send the selected date range for filtering
     }
   };
 
@@ -48,7 +48,7 @@ const Popup = ({ onShowTable, onRangePickerChange}) => {
 
   return (
     <>
-       <RangePicker
+      <RangePicker
         key="rangePickerKey"
         className="rangepickerformat"
         showTime={{ format: "HH:mm" }}
@@ -76,7 +76,7 @@ const Popup = ({ onShowTable, onRangePickerChange}) => {
           </Button>,
         ]}
       >
-        <Radio.Group onChange={onChange} value={radioValue}>
+         <Radio.Group onChange={onChange} value={radioValue}>
           <div className="radiobtn">
             <Radio className="radio-text" value={1}>
               Live data starting from relative time
@@ -137,7 +137,7 @@ const Popup = ({ onShowTable, onRangePickerChange}) => {
           </div>
         </Radio.Group>
       </Modal>
-      <Button className="btn" onClick={onApply}>
+      <Button className="btn" onClick={onSubmit}>
         Submit
       </Button>
     </>

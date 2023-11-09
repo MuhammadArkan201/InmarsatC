@@ -8,50 +8,38 @@ const EgcTab = () => {
   const [tableData, setTableData] = useState([]);
   const [rangePickerValue, setRangePickerValue] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [setFilteredData] = useState([]);
-
-  const filterData = (selectedRange) => {
-    if (selectedRange.length === 2) {
-      const [startTime, endTime] = selectedRange;
-
-      // Filter the tableData based on the timestamp within the range
-      const filtered = tableData.filter((item) => {
-        const timestamp = item.timestamp;
-
-        return timestamp >= startTime && timestamp <= endTime;
-      });
-
-      // Update the state with the filtered data
-      setFilteredData(filtered);
-    } else {
-      console.error('Invalid range provided.');
-    }
-  };
 
   useEffect(() => {
-    // Fetch the JSON data when the component mounts
-    const fetchJsonData = async () => {
+    let isMounted = true; // Flag to prevent state updates on an unmounted component
+
+    const fetchData = async () => {
       try {
         const response = await fetch("/datas/egctabData/egctabData.json");
         const data = await response.json();
-        setTableData(data.data); // Store the fetched data
-        setLoading(false); // Set loading state to false once data is loaded
-        filterData([]); // Initially load all data without filtering
+        if (isMounted) {
+          setTableData(data.data); // Store the fetched data
+          setLoading(false); // Set loading state to false once data is loaded
+        }
       } catch (error) {
         console.error("Error fetching data: ", error);
         setLoading(false);
       }
     };
 
-    return () => fetchJsonData();
-  }, []);
+    if (showTable && isMounted && tableData.length === 0) {
+      fetchData(); // Fetch data only when showTable becomes true and tableData is empty
+    }
 
+    return () => {
+      isMounted = false; // Set the isMounted flag to false on unmount
+    };
+  }, [showTable]); // Run when showTable changes
 
   return (
     <div className="contents">
       <div className="content">
         <div className="head-content">EGC Messages</div>
-        < Popup
+        <Popup
           onShowTable={() => setShowTable(true)}
           onRangePickerChange={(value) => setRangePickerValue(value)}
         />
@@ -63,7 +51,7 @@ const EgcTab = () => {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          showTable && (
+          showTable && tableData.length > 0 && (
             <EgcTable rangePickerValue={rangePickerValue} tableData={tableData} />
           )
         )}

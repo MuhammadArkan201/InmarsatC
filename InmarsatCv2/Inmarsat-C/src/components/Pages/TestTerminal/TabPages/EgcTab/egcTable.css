@@ -12,3 +12,19 @@
     background-color: rgba(85, 85, 85, 0.15);
     border-radius: 0% !important;
   }
+
+
+@media screen and (max-width: 768px) {
+  .titletbl {
+    text-align: center;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .msg-popup-modal {
+    width: 90%;
+    max-width: 90%;
+  }
+}
