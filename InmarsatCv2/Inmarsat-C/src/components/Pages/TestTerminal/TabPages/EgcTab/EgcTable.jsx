@@ -37,7 +37,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       title: "Priority",
       dataIndex: "priority",
       key: "priority",
-      width: '10%',
+
       render: (text) => convertPriority(text),
     },
     {
@@ -55,13 +55,11 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       title: "Bytes",
       dataIndex: "bytes",
       key: "bytes",
-      width: '10%',
     },
     {
       title: "Sequence",
       dataIndex: "sequence",
       key: "sequence",
-      
     },
     {
       title: "Error",
@@ -107,21 +105,25 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
 
   useEffect(() => {
     console.log("Selected date range: ", rangePickerValue); // Check the selected date range
-  
+
     const filteredData = tableData.filter((item) => {
       const timestamp = item.timestamp;
       const [startDate, endDate] = rangePickerValue;
-  
-      console.log("Timestamp, Start, End: ", timestamp, startDate.unix(), endDate.unix()); // Verify timestamp and range values
-  
+
+      console.log(
+        "Timestamp, Start, End: ",
+        timestamp,
+        startDate.unix(),
+        endDate.unix()
+      ); // Verify timestamp and range values
+
       // Filter the data based on the date range selected
       return timestamp >= startDate.unix() && timestamp <= endDate.unix();
     });
-  
+
     console.log("Filtered Data: ", filteredData); // Log the filtered data
-  
+
     setApiResponseData({ data: filteredData });
-  
   }, [rangePickerValue, tableData]);
 
   const modalContent = selectedRecord ? (
@@ -146,6 +148,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
   return (
     <div className="contents">
       <div className="titletbl">Total Records: {totalRecords}</div>
+
       <div>
         <Table
           columns={columns.map((col) => {

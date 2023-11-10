@@ -1,7 +1,5 @@
-import { Tabs, Typography, Select } from "antd";
-import InfoTab from "./TabPages/InfoTab/InfoTab";
+import {Typography } from "antd";
 import TabsOps from "./TabPages/TabsOps";
-import TerminalLoc from "./TabPages/TerminalLoc";
 
 function TestTerminal() {
   return (

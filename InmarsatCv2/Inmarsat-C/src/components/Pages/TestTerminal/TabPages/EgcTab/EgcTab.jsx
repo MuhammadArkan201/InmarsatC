@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../../../../../App.css";
+import moment from "moment";
 import Popup from "../../../../Popup/Popup";
 import EgcTable from "./EgcTable";
 
@@ -46,10 +47,10 @@ const EgcTab = () => {
       </div>
       <div className="content">
         <div className="head-content">
-          Records from {rangePickerValue.join(" - ")}
+        Records from {rangePickerValue.map(date => moment(date).format("YYYY-MM-DD HH:mm")).join(" until ")}
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <p></p>
         ) : (
           showTable && tableData.length > 0 && (
             <EgcTable rangePickerValue={rangePickerValue} tableData={tableData} />

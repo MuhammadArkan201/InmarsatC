@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../../App.css";
 import PropTypes from "prop-types";
+import moment from "moment";
 import { Button, Modal, DatePicker, Radio, Space, Select } from "antd";
 
 const { RangePicker } = DatePicker;
@@ -10,6 +11,7 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
   const [dateValue, setDateValue] = useState(null);
   const [radioValue, setRadioValue] = useState(1);
   const [outerDate, setOuterDate] = useState(null);
+  const [selectValue, setSelectValue] = useState(null); // Added state for Select value
 
   const showModal = () => {
     setOpen(true);
@@ -42,8 +44,28 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
     }
   };
 
-  const onDatePickerChange = (date) => {
-    setDateValue(date);
+  const onDatePickerChange = (date, dateString) => {
+    if (radioValue === 1) {
+      handleSelectChange(dateString); // Pass the selected value to handleSelectChange
+    } else if (radioValue === 2) {
+      const startlive = date ? date : null;
+      const endOfDay = moment();
+      const range = [startlive, endOfDay];
+      setDateValue(range);
+    } else {
+      setDateValue(date);
+    }
+  };
+
+  const handleSelectChange = (value) => {
+    setSelectValue(value); // Update the Select value state
+    const selectedHours = parseInt(value, 10);
+    if (!isNaN(selectedHours)) {
+      const start = moment().subtract(selectedHours, "hours");
+      const end = moment();
+      const range = [start, end];
+      setDateValue(range);
+    }
   };
 
   return (
@@ -76,7 +98,7 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
           </Button>,
         ]}
       >
-         <Radio.Group onChange={onChange} value={radioValue}>
+        <Radio.Group onChange={onChange} value={radioValue}>
           <div className="radiobtn">
             <Radio className="radio-text" value={1}>
               Live data starting from relative time
@@ -86,20 +108,22 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
             <Space size={12}>
               <Select
                 className="datepicker-format"
-                defaultValue="24 Hours"
+                value={selectValue}
+                placeholder="Choose the relative time"
                 disabled={radioValue !== 1}
+                onChange={handleSelectChange}
                 options={[
                   {
-                    value: "24Hours",
-                    label: "24 Hours",
+                    value: "24",
+                    label: "Last 24 Hours",
                   },
                   {
-                    value: "12Hours",
-                    label: "12 Hours",
+                    value: "12",
+                    label: "Last 12 Hours",
                   },
                   {
-                    value: "6Hours",
-                    label: "6 Hours",
+                    value: "6",
+                    label: "Last 6 Hours",
                   },
                 ]}
               />
@@ -115,7 +139,9 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
               <DatePicker
                 className="datepicker-format"
                 disabled={radioValue !== 2}
-                onChange={onDatePickerChange}
+                showTime={{ format: "HH:mm" }}
+                format="YYYY-MM-DD HH:mm"
+                onChange={(date) => onDatePickerChange(date)}
               />
             </Space>
           </div>

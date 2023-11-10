@@ -1,30 +1,38 @@
 .ant-table-container {
-    border-radius: 0% !important;
-    border : 1px solid black !important;
+  border-radius: 0 !important;
+  border: 1px solid black !important;
 }
 
 .ant-table-cell {
-    border : 1px solid black !important;    
-    border-radius: 0% !important;
-  }
+  border: 1px solid black !important;
+  border-radius: 0 !important;
+  text-align: center !important;
+}
 
 .even-row {
-    background-color: rgba(85, 85, 85, 0.15);
-    border-radius: 0% !important;
-  }
-
+  background-color: rgba(85, 85, 85, 0.15);
+  border-radius: 0 !important;
+}
 
 @media screen and (max-width: 768px) {
   .titletbl {
-    text-align: center;
+      text-align: left;
   }
 
   .table-container {
-    overflow-x: auto;
+      overflow-x: auto;
   }
 
   .msg-popup-modal {
-    width: 90%;
-    max-width: 90%;
+    max-width: 800px;
+    width: 100%;
+    max-height: 80vh; /* Set a maximum height for the modal */
+    overflow-y: auto; /* Add a vertical scrollbar if needed */
+    text-align: left;
   }
 }
+
+.ant-table-expanded-row-fixed {
+  width: 100% !important;/* or overflow: auto; */
+}
+
