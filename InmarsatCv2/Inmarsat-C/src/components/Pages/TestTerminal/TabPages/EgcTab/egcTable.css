@@ -36,3 +36,12 @@
   width: 100% !important;/* or overflow: auto; */
 }
 
+.ant-picker-panel-container-custom {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Add this style to customize the dropdown */
+.custom-dropdown {
+  max-height: 250px; /* Adjust the max-height as needed */
+}

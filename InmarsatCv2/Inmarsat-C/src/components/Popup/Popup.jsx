@@ -50,7 +50,7 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
     } else if (radioValue === 2) {
       const currentdate = date ? date : null;
       const startlive = moment();
-      const range = [ currentdate, startlive];
+      const range = [currentdate, startlive];
       setDateValue(range);
     } else {
       setDateValue(date);
@@ -141,6 +141,7 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
                 disabled={radioValue !== 2}
                 showTime={{ format: "HH:mm" }}
                 format="YYYY-MM-DD HH:mm"
+                dropdownClassName="custom-dropdown" // Add this line if needed
                 onChange={(range) => onDatePickerChange(range)}
               />
             </Space>

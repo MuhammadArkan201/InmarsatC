@@ -87,6 +87,12 @@
   width: 100%;
 
 }
+
+@media screen and (max-width: 768px) {
+  .PageContent {
+    overflow-x: auto;
+  }
+}
 .Space {
   background-color: var(--body_background);
   color: var(--body_color);
@@ -134,6 +140,12 @@
   color: var(--header_color);
   padding: 16px;
   margin-bottom: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .content {
+    overflow-x: auto;
+  }
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -263,3 +275,12 @@
   color: var(--body_color);
   text-align: left;
 }
+
+.tbl {
+  text-align: left;
+}
+
+
+  td{
+    padding-left: 20px;
+  }
