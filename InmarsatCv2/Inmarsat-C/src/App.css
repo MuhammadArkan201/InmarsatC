@@ -80,14 +80,13 @@
 .PageContent {
   background-color: var(--body_background);
   color: var(--body_color);
-  padding: 24px 16px;
+  padding-top: 24px;
+  padding-left: 16px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* This ensures the content takes up the available vertical space */
+  width: 100%;
+
 }
-
-
-
 .Space {
   background-color: var(--body_background);
   color: var(--body_color);
@@ -135,7 +134,6 @@
   color: var(--header_color);
   padding: 16px;
   margin-bottom: 16px;
-  flex-grow: 1;
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -192,7 +190,7 @@
 }
 
 .datepicker-format {
-  width: 370px !important;
+  width: 400px !important;
   margin-bottom: 16px !important;
   text-align: left; 
 }

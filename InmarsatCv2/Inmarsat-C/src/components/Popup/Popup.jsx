@@ -48,9 +48,9 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
     if (radioValue === 1) {
       handleSelectChange(dateString); // Pass the selected value to handleSelectChange
     } else if (radioValue === 2) {
-      const startlive = date ? date : null;
-      const endOfDay = moment();
-      const range = [startlive, endOfDay];
+      const currentdate = date ? date : null;
+      const startlive = moment();
+      const range = [ currentdate, startlive];
       setDateValue(range);
     } else {
       setDateValue(date);
@@ -141,7 +141,7 @@ const Popup = ({ onShowTable, onRangePickerChange }) => {
                 disabled={radioValue !== 2}
                 showTime={{ format: "HH:mm" }}
                 format="YYYY-MM-DD HH:mm"
-                onChange={(date) => onDatePickerChange(date)}
+                onChange={(range) => onDatePickerChange(range)}
               />
             </Space>
           </div>
