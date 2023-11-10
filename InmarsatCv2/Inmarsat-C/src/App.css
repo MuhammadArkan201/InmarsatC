@@ -181,6 +181,17 @@
   justify-content: center;
 }
 
+@media screen and (max-width: 768px) {
+  .img { 
+      overflow-x: auto;
+  
+  }
+  .img-container { 
+    overflow-x: auto;
+  
+  }
+}
+
 .Preferred {
   margin-top: 16px !important;
   width: 227px;

@@ -46,7 +46,7 @@ const EgcTab = () => {
       </div>
       <div className="content">
         <div className="head-content">
-          Records from {rangePickerValue.join(" until ")}
+          Records from {rangePickerValue.join(" ,until ")}
         </div>
         {loading ? (
           <p>Please select the date</p>
