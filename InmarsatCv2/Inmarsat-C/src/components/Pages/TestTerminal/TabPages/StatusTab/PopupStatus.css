@@ -1,0 +1,15 @@
+/* PopupStatus.css */
+.ant-modal-body {
+    background-color: transparent !important; /* Set the background color to transparent or any other desired value */
+    padding: 0 !important; }
+  
+  .ant-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .popupstsbtn {
+    margin-left: 8px; /* Add margin to separate buttons if needed */
+  }
+  
+  

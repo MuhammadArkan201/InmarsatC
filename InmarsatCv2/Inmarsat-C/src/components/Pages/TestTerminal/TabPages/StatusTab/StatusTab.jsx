@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import "../../../../../App.css";
-import { Button, Select } from "antd";
+import { Modal } from "antd";
+import PopupStatus from "../../../../Popup/PopupStatus";
 
-function StatusTab() {
+// ... (imports)
+
+function StatusTab({ handleSelectChange }) {
   const [jsonData, setJsonData] = useState(null);
 
   useEffect(() => {
-    console.log("Fetching data...");
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -17,12 +20,14 @@ function StatusTab() {
         }
         const data = await response.json();
 
-        if (data.data["Last Response"]) {
+        // Check if "Last Response" exists and modify it
+        if (data.data["Last Response"] !== undefined) {
           const lastResponse = data.data["Last Response"];
           const lastResponseUTC = getUTCDate(lastResponse);
           data.data["Last Response (UTC)"] = lastResponseUTC;
-          delete data.data["Last Response"];
         }
+        // Remove "Last Response" key, whether modified or not
+        delete data.data["Last Response"];
 
         setJsonData(data);
       } catch (error) {
@@ -37,9 +42,47 @@ function StatusTab() {
   }, []);
 
   const getUTCDate = (epochTimestamp) => {
-    const date = new Date(epochTimestamp * 1000);
+    const date = new Date(epochTimestamp * 1000); // Convert seconds to milliseconds
     return date.toUTCString();
   };
+
+  const orderedKeys = [
+    "Last Response (UTC)",
+    "Sync",
+    "TDM Type",
+    "TDM Channel",
+    "Current Channel",
+    "Current Protocol",
+    "TDM Origin",
+    "TDM Frame Number",
+    "BB Error Rate",
+    "Preferred Ocean",
+    // Add this line to keep "Last Response" at the bottom
+  ];
+
+  const onChange = (value) => {
+    handleSelectChange(value);
+  };
+
+  const updatePreferredOcean = async ({ selectedOption, firstResponseData, secondResponseData }) => {
+    try {
+      const response = await fetch("/datas/statusData/statustabbatamData.json");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      const data = await response.json();
+      data.data["Preferred Ocean"] = selectedOption;
+      
+      // Use firstResponseData and secondResponseData as needed
+  
+      // Update the state to trigger a re-render
+      setJsonData(data);
+    } catch (error) {
+      console.error("Error updating Preferred Ocean:", error);
+    }
+  };
+  
 
   return (
     <div>
@@ -48,18 +91,18 @@ function StatusTab() {
         <div>
           {jsonData && (
             <table className="tbl">
-              <tr>
-                <th>Last Response</th>
-                <td>{jsonData.data["Last Response (UTC)"]}</td>
-              </tr>
-              {Object.entries(jsonData.data)
-                .filter(([key]) => key !== "Last Response (UTC)")
-                .map(([key, value]) => (
+              <tbody>
+                {orderedKeys.map((key) => (
                   <tr key={key}>
                     <th>{key}</th>
-                    <td>{value}</td>
+                    <td>
+                      {key === "Last Response"
+                        ? getUTCDate(jsonData.data[key])
+                        : jsonData.data[key]}
+                    </td>
                   </tr>
                 ))}
+              </tbody>
             </table>
           )}
         </div>
@@ -70,26 +113,17 @@ function StatusTab() {
           Please select your preferred ocean region to set specific parameters,
           preferences, or configurations.
         </div>
-        <Select
-          className="Preferred"
-          value="Preferred Ocean Region"
-          style={{ width: 227 }}
-          options={[
-            {
-              value: "Preferred Ocean Region",
-              label: "Preferred Ocean Region",
-            },
-            { value: "West Atlantic", label: "West Atlantic" },
-            { value: "East Atlantic", label: "East Atlantic" },
-            { value: "Pacific", label: "Pacific" },
-            { value: "Indian", label: "Indian" },
-            { value: "None", label: "None" },
-          ]}
+        <PopupStatus
+          updatePreferredOcean={updatePreferredOcean}
+          handleSelectChange={onChange}
         />
-        <Button className="btn">Set Region</Button>
       </div>
     </div>
   );
 }
+
+StatusTab.propTypes = {
+  handleSelectChange: PropTypes.func.isRequired,
+};
 
 export default StatusTab;

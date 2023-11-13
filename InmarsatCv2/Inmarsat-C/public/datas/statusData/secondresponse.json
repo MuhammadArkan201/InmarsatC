@@ -1,0 +1,4 @@
+{
+    "data": "ncs -g 244 | 12580\r\nncs: Common channel management\r\nncs Usage: ncs <option>\r\n-a <id>,<chanNo> : Add NCS to list\r\n-g <id | chanNo> : Go to NCS \r\n-l: List NCS table\r\n-n: List Network configuration\r\n-r <id>: Remove NCS from list\r\n-s: Scan",
+    "error": ""
+  }
