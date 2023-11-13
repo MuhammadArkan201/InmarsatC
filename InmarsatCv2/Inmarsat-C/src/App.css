@@ -229,10 +229,7 @@
   color: var(--button_color) !important;
 }
 
-.chart-container {
-  height:210px !important;
-  width: 100% !important;
-}
+
 
 .btn {
   margin-left: 16px !important;

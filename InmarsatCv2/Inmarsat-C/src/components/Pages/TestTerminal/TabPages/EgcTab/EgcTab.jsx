@@ -51,8 +51,12 @@ const EgcTab = () => {
         {loading ? (
           <p>Please select the date</p>
         ) : (
-          showTable && tableData.length > 0 && (
-            <EgcTable rangePickerValue={rangePickerValue} tableData={tableData} />
+          showTable &&
+          tableData.length > 0 && (
+            <EgcTable
+              rangePickerValue={rangePickerValue}
+              tableData={tableData}
+            />
           )
         )}
       </div>

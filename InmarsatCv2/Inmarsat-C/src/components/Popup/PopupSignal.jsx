@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../../App.css";
+import moment from "moment";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -13,24 +14,24 @@ import {
 
 const { RangePicker } = DatePicker;
 
-const PopupSignal = ({ onRangePickerChange }) => {
-  const [loading, setLoading] = useState(false);
+const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   const [open, setOpen] = useState(false);
   const [dateValue, setDateValue] = useState(null);
   const [radioValue, setRadioValue] = useState(1);
   const [outerDate, setOuterDate] = useState(null);
-  const [resolution, setResolution] = useState(null); // State to hold the resolution value
+  const [resolution, setResolution] = useState(null);
+  const [selectValue, setSelectValue] = useState(null); // State to hold the resolution value
 
+  const onChangeNumber = (value) => {
+    console.log("changed", value);
+    setResolution(value);
+  };
   const showModal = () => {
     setOpen(true);
   };
 
   const handleOk = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setOpen(false);
-    }, 3000);
+    setOpen(false);
   };
 
   const handleCancel = () => {
@@ -45,32 +46,54 @@ const PopupSignal = ({ onRangePickerChange }) => {
     if (dateValue) {
       setOuterDate(dateValue);
       handleCancel();
+      // You might perform other operations here
+    }
+  };
+
+  const onSubmit = async () => {
+    if (dateValue) {
+      onShowSignal(); // Change to onShowSignal
       onRangePickerChange(dateValue);
     }
   };
 
-  const onDatePickerChange = (date) => {
-    setDateValue(date);
+  const onDatePickerChange = (date, dateString) => {
+    if (radioValue === 1) {
+      handleSelectChange(dateString); // Pass the selected value to handleSelectChange
+    } else if (radioValue === 2) {
+      const currentdate = date ? date : null;
+      const startlive = moment();
+      const range = [currentdate, startlive];
+      setDateValue(range);
+    } else {
+      setDateValue(date);
+    }
   };
 
-  const onChangeNumber = (value) => {
-    console.log("changed", value);
-    setResolution(value);
+  const handleSelectChange = (value) => {
+    setSelectValue(value); // Update the Select value state
+    const selectedHours = parseInt(value, 10);
+    if (!isNaN(selectedHours)) {
+      const start = moment().subtract(selectedHours, "hours");
+      const end = moment();
+      const range = [start, end];
+      setDateValue(range);
+    }
   };
 
   return (
     <>
       <RangePicker
+        key="rangePickerKey"
         className="rangepickerformat"
-        showTime={{
-          format: "HH:mm",
-        }}
+        showTime={{ format: "HH:mm" }}
         format="YYYY-MM-DD HH:mm"
         value={outerDate}
-        onOk={handleOk}
-        onClick={showModal}
+        onOpenChange={showModal}
         open={false}
+        onChange={onDatePickerChange}
       />
+
       <Modal
         className="popup-modal"
         open={open}
@@ -98,20 +121,22 @@ const PopupSignal = ({ onRangePickerChange }) => {
             <Space size={12}>
               <Select
                 className="datepicker-format"
+                value={selectValue}
+                placeholder="Choose the relative time"
                 disabled={radioValue !== 1}
-                defaultValue="24 Hours"
+                onChange={handleSelectChange}
                 options={[
                   {
-                    value: "24Hours",
-                    label: "24 Hours",
+                    value: "24",
+                    label: "Last 24 Hours",
                   },
                   {
-                    value: "12Hours",
-                    label: "12 Hours",
+                    value: "12",
+                    label: "Last 12 Hours",
                   },
                   {
-                    value: "6Hours",
-                    label: "6 Hours",
+                    value: "6",
+                    label: "Last 6 Hours",
                   },
                 ]}
               />
@@ -127,7 +152,10 @@ const PopupSignal = ({ onRangePickerChange }) => {
               <DatePicker
                 className="datepicker-format"
                 disabled={radioValue !== 2}
-                onChange={onDatePickerChange}
+                showTime={{ format: "HH:mm" }}
+                format="YYYY-MM-DD HH:mm"
+                dropdownClassName="custom-dropdown" // Add this line if needed
+                onChange={(range) => onDatePickerChange(range)}
               />
             </Space>
           </div>
@@ -147,12 +175,12 @@ const PopupSignal = ({ onRangePickerChange }) => {
               />
             </Space>
           </div>
-          <div className="radiobtn">
-            <Radio className="radio-text" value={4}>
-              Resolution
-            </Radio>
-          </div>
           <div>
+            <div className="radiobtn">
+              <Radio className="radio-text" value={4}>
+                Resolution
+              </Radio>
+            </div>
             <Space size={12}>
               <InputNumber
                 className="datepicker-format"
@@ -165,7 +193,7 @@ const PopupSignal = ({ onRangePickerChange }) => {
           </div>
         </Radio.Group>
       </Modal>
-      <Button className="btn" onClick={onApply}>
+      <Button className="btn" onClick={onSubmit}>
         Submit
       </Button>
     </>
@@ -173,6 +201,7 @@ const PopupSignal = ({ onRangePickerChange }) => {
 };
 
 PopupSignal.propTypes = {
+  onShowSignal: PropTypes.func.isRequired, // Change to onShowSignal
   onRangePickerChange: PropTypes.func.isRequired,
 };
 
