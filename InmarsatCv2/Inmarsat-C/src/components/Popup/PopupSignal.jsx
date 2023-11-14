@@ -149,30 +149,31 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
           </div>
           <div>
             <Space size={12}>
-              <DatePicker
-                className="datepicker-format"
-                disabled={radioValue !== 2}
-                showTime={{ format: "HH:mm" }}
-                format="YYYY-MM-DD HH:mm"
-                dropdownClassName="custom-dropdown" // Add this line if needed
-                onChange={(range) => onDatePickerChange(range)}
-              />
-            </Space>
-          </div>
-          <div className="radiobtn">
-            <Radio className="radio-text" value={3}>
-              Historic data
-            </Radio>
-          </div>
-          <div>
-            <Space size={12}>
-              <RangePicker
-                className="datepicker-format"
-                showTime={{ format: "HH:mm" }}
-                format="YYYY-MM-DD HH:mm"
-                onChange={onDatePickerChange}
-                disabled={radioValue !== 3}
-              />
+            <DatePicker
+                  className="datepicker-format"
+                  disabled={radioValue !== 2}
+                  showTime={{ format: "HH:mm" }}
+                  format="YYYY-MM-DD HH:mm"
+                  dropdownClassName="custom-dropdown" // Add this line if needed
+                  onChange={(range) => onDatePickerChange(range)}
+                />
+              </Space>
+            </div>
+            <div className="radiobtn">
+              <Radio className="radio-text" value={3}>
+                Historic data
+              </Radio>
+            </div>
+            <div>
+              <Space size={12}>
+                <RangePicker
+                  className="datepicker-format"
+                  showTime={{ format: "HH:mm" }}
+                  format="YYYY-MM-DD HH:mm"
+                  onChange={onDatePickerChange}
+                  dropdownClassName="custom-dropdown" // Add this line if needed
+                  disabled={radioValue !== 3}
+                />
             </Space>
           </div>
           <div>

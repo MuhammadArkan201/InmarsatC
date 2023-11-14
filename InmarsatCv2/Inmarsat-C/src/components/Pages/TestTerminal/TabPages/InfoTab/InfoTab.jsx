@@ -9,18 +9,24 @@ function InfoTab() {
     const fetchJsonData = async () => {
       try {
         const response = await fetch(
-          "/datas/infotabData/infotabbatamdata.json"
+          "https://api.jsonbin.io/v3/b/6552e4ec54105e766fcfb258",
+          {
+            headers: {
+              'X-Master-Key': '$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe',
+            },
+          }
         );
+
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error(`Network response was not ok (status: ${response.status})`);
         }
-        const data = await response.json();
+
+        const responseData = await response.json();
+        const data = responseData.record.data; // Access data under the "record" key
+
         setJsonData(data);
       } catch (error) {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -28,6 +34,9 @@ function InfoTab() {
 
     return () => fetchJsonData();
   }, []);
+
+  // Log the jsonData to inspect its structure
+  console.log(jsonData);
 
   return (
     <div className="contents">
@@ -40,10 +49,10 @@ function InfoTab() {
       <div className="content">
         <div className="head-content">Device Information</div>
         <div>
-          {jsonData && (
+          {jsonData ? (
             <table className="tbl">
               <tbody>
-                {Object.entries(jsonData.data).map(([key, value]) => (
+                {Object.entries(jsonData).map(([key, value]) => (
                   <tr key={key}>
                     <th>{key}</th>
                     <td>{value}</td>
@@ -51,6 +60,8 @@ function InfoTab() {
                 ))}
               </tbody>
             </table>
+          ) : (
+            <p>No data available</p>
           )}
         </div>
       </div>
