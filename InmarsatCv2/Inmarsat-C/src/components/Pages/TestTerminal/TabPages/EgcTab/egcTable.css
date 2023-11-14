@@ -41,7 +41,3 @@
   overflow-y: auto;
 }
 
-/* Add this style to customize the dropdown */
-.custom-dropdown {
-  max-height: 250px; /* Adjust the max-height as needed */
-}

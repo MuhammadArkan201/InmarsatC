@@ -151,6 +151,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
 
       <div>
         <Table
+          size="small"
           columns={columns.map((col) => {
             if (col.key === "operation") {
               return {

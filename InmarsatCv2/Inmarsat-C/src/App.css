@@ -281,3 +281,9 @@
   td{
     padding-left: 20px;
   }
+
+/* Add this CSS to make the DatePicker dropdown smaller */
+.custom-dropdown .ant-picker-panel {
+  height: 250px;
+  overflow: auto;
+}
