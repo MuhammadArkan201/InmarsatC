@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import UTTerminalImage from "../../../../Img/UT-terminalBatam.jpeg";
 
 function InfoTab() {
@@ -6,37 +6,70 @@ function InfoTab() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchJsonData = async () => {
-      try {
-        const response = await fetch(
-          "https://api.jsonbin.io/v3/b/6552e4ec54105e766fcfb258",
-          {
-            headers: {
-              'X-Master-Key': '$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe',
-            },
-          }
+    const fetchJsonData = () => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open(
+          "POST",
+          "../src/components/Data/Batam/infoTab/infotabbatamdata.json",
+          true
+        );
+        xhr.setRequestHeader(
+          "X-Master-Key",
+          "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
         );
 
-        if (!response.ok) {
-          throw new Error(`Network response was not ok (status: ${response.status})`);
-        }
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const response = JSON.parse(xhr.responseText);
+              resolve(response);
+            } else {
+              reject(
+                new Error(
+                  `Network response for POST request was not ok: ${xhr.status}`
+                )
+              );
+            }
+          }
+        };
 
-        const responseData = await response.json();
-        const data = responseData.record.data; // Access data under the "record" key
+        xhr.onerror = function () {
+          reject(new Error("There was an error with the XHR request"));
+        };
 
-        setJsonData(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
+        xhr.send(JSON.stringify({}));
+      });
     };
 
-    return () => fetchJsonData();
-  }, []);
+    try {
+      setLoading(true);
 
-  // Log the jsonData to inspect its structure
-  console.log(jsonData);
+      return () =>
+        fetchJsonData()
+          .then((postData) => {
+            setJsonData(postData);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+    } catch (error) {
+      console.error("Error initiating XHR request:", error);
+    }
+
+    return () => fetchJsonData;
+  }, []); // Empty dependency array ensures this effect runs only once
+
+  // Optional: If you want to prevent any additional requests, you can use the following
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    return () => abortController.abort();
+  }, []);
 
   return (
     <div className="contents">
@@ -49,19 +82,21 @@ function InfoTab() {
       <div className="content">
         <div className="head-content">Device Information</div>
         <div>
-          {jsonData ? (
-            <table className="tbl">
-              <tbody>
-                {Object.entries(jsonData).map(([key, value]) => (
-                  <tr key={key}>
-                    <th>{key}</th>
-                    <td>{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {loading ? (
+            <p>Loading...</p>
           ) : (
-            <p>No data available</p>
+            jsonData && (
+              <table className="tbl">
+                <tbody>
+                  {Object.entries(jsonData.data).map(([key, value]) => (
+                    <tr key={key}>
+                      <th>{key}</th>
+                      <td>{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )
           )}
         </div>
       </div>

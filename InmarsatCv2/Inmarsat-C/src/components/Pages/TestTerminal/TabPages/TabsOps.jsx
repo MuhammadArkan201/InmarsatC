@@ -13,18 +13,39 @@ function TabsOps() {
   const [signalValue, setSignalValue] = useState(null);
 
   useEffect(() => {
-    const fetchSignalData = async () => {
-      try {
-        const response = await fetch("/datas/signaltabData/signaltabData.json");
-        const jsonData = await response.json();
-        const signal = jsonData.data.signal;
-        setSignalValue(signal);
-      } catch (error) {
-        console.error("Error fetching signal data:", error);
-      }
+    const fetchSignalData = () => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "/datas/signaltabData/signaltabData.json", true);
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const jsonData = JSON.parse(xhr.responseText);
+              const signal = jsonData.data.signal;
+              resolve(signal);
+            } else {
+              reject(new Error(`Network response was not ok: ${xhr.status}`));
+            }
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error("There was an error with the XHR request"));
+        };
+
+        xhr.send();
+      });
     };
 
-    return () => fetchSignalData();
+    return () =>
+      fetchSignalData()
+        .then((signal) => {
+          setSignalValue(signal);
+        })
+        .catch((error) => {
+          console.error("Error fetching signal data:", error);
+        });
   }, []);
 
   return (

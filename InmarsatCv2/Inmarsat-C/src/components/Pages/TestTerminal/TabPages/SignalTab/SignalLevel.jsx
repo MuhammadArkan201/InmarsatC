@@ -27,17 +27,42 @@ function SignalLevel({ selectedRange }) {
   const [jsonData, setJsonData] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/datas/signaltabData/signaltabData.json");
-        const data = await response.json();
-        setJsonData(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    const fetchData = () => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/datas/signaltabData/signaltabData.json", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+              resolve(data);
+            } else {
+              reject(new Error(`Network response was not ok: ${xhr.status}`));
+            }
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error("There was an error with the XHR request"));
+        };
+
+        // Replace the following line with your actual payload
+        const payload = JSON.stringify({ key: "value" });
+
+        xhr.send(payload);
+      });
     };
 
-    return () => fetchData();
+    return () => fetchData()
+      .then((data) => {
+        setJsonData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+ 
   }, []);
 
   // Check if selectedRange exists and has valid start and end dates

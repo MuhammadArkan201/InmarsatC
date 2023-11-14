@@ -12,22 +12,46 @@ const EgcTab = () => {
   useEffect(() => {
     let isMounted = true; // Flag to prevent state updates on an unmounted component
 
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/datas/egctabData/egctabData.json");
-        const data = await response.json();
-        if (isMounted) {
-          setTableData(data.data); // Store the fetched data
-          setLoading(false); // Set loading state to false once data is loaded
-        }
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setLoading(false);
-      }
+    const fetchData = () => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/datas/egctabData/egctabData.json", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+              resolve(data.data);
+            } else {
+              reject(new Error(`Network response was not ok: ${xhr.status}`));
+            }
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error("There was an error with the XHR request"));
+        };
+
+        // Replace the following line with your actual payload
+        const payload = JSON.stringify({ key: "value" });
+
+        xhr.send(payload);
+      });
     };
 
     if (showTable && isMounted && tableData.length === 0) {
-      fetchData(); // Fetch data only when showTable becomes true and tableData is empty
+      fetchData()
+        .then((data) => {
+          if (isMounted) {
+            setTableData(data); // Store the fetched data
+            setLoading(false); // Set loading state to false once data is loaded
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data: ", error);
+          setLoading(false);
+        });
     }
 
     return () => {

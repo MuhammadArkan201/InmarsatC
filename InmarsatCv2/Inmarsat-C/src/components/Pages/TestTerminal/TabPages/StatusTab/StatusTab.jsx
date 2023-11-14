@@ -10,33 +10,57 @@ function StatusTab({ handleSelectChange }) {
   const [jsonData, setJsonData] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "/datas/statusData/statustabbatamData.json"
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
+    const fetchData = () => {
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
 
-        // Check if "Last Response" exists and modify it
-        if (data.data["Last Response"] !== undefined) {
-          const lastResponse = data.data["Last Response"];
-          const lastResponseUTC = getUTCDate(lastResponse);
-          data.data["Last Response (UTC)"] = lastResponseUTC;
-        }
-        // Remove "Last Response" key, whether modified or not
-        delete data.data["Last Response"];
+        xhr.open("POST", "/datas/statusData/statustabbatamData.json", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-        setJsonData(data);
-      } catch (error) {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
-      }
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+
+              // Check if "Last Response" exists and modify it
+              if (data.data["Last Response"] !== undefined) {
+                const lastResponse = data.data["Last Response"];
+                const lastResponseUTC = getUTCDate(lastResponse);
+                data.data["Last Response (UTC)"] = lastResponseUTC;
+              }
+              // Remove "Last Response" key, whether modified or not
+              delete data.data["Last Response"];
+
+              resolve(data);
+            } else {
+              reject(new Error(`Network response was not ok: ${xhr.status}`));
+            }
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error("There was an error with the XHR request"));
+        };
+
+        // Replace the following line with your actual payload
+        const payload = JSON.stringify({ key: "value" });
+
+        xhr.send(payload);
+      });
     };
+
+    try {
+      return () =>
+        fetchData()
+          .then((data) => {
+            setJsonData(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+    } catch (error) {
+      console.error("Error initiating XHR request:", error);
+    }
 
     return () => fetchData();
   }, []);
@@ -84,7 +108,7 @@ function StatusTab({ handleSelectChange }) {
   };
   
 
-  return (
+return (
     <div>
       <div className="content">
         <div className="head-content">Device Status</div>

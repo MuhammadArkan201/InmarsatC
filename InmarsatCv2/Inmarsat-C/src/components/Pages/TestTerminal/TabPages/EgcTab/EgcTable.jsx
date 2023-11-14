@@ -86,17 +86,35 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
   ];
 
   const handleDataClick = async (record) => {
-    const messagePopupResponse = await fetch(
-      "/datas/egctabData/messagepopup.json"
-    );
-    const messagePopupData = await messagePopupResponse.json();
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/datas/egctabData/messagepopup.json", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
 
-    const messageToShow = messagePopupData.data.find(
-      (data) => data.sequence === record.sequence
-    );
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const messagePopupData = JSON.parse(xhr.responseText);
 
-    setSelectedRecord({ ...record, message: messageToShow });
-    setOpen(true);
+          const messageToShow = messagePopupData.data.find(
+            (data) => data.sequence === record.sequence
+          );
+
+          setSelectedRecord({ ...record, message: messageToShow });
+          setOpen(true);
+        } else {
+          console.error(`Network response was not ok: ${xhr.status}`);
+        }
+      }
+    };
+
+    xhr.onerror = function () {
+      console.error("There was an error with the XHR request");
+    };
+
+    // Replace the following line with your actual payload
+    const payload = JSON.stringify({ key: "value" });
+
+    xhr.send(payload);
   };
 
   const handleModalCancel = () => {
