@@ -1,25 +1,72 @@
 import { useEffect, useState } from "react";
 import UTTerminalImage from "../../../../Img/UT-terminalBatam.jpeg";
 
-function InfoTab() {
+export const handlePostRequest = (terminalId) => {
+  // Check if terminalId is null
+  if (terminalId === null) {
+    console.log("Please select a terminal site");
+    return;
+  }
+
+  const xhr = new XMLHttpRequest();
+
+  xhr.open(
+    "POST",
+    `https://8d296872-65ca-450a-b572-34eae6228517.mock.pstmn.io/info?dest=${terminalId}`,
+    true
+  );
+  xhr.setRequestHeader(
+    "X-Master-Key",
+    "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
+  );
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        console.log(response);
+      } else {
+        console.error(
+          `Network response for POST request was not ok: ${xhr.status}`
+        );
+      }
+    }
+  };
+
+  xhr.onerror = function () {
+    console.error("There was an error with the XHR request");
+  };
+
+  xhr.send();
+  console.log(`Handling POST request for terminal ID: ${terminalId}`);
+};
+
+function InfoTab({ selectedTerminal }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const fetchJsonData = () => {
+      // Check if selectedTerminal is null
+      if (selectedTerminal === null) {
+        setErrorMessage("Please select a terminal site");
+        return Promise.resolve(null);
+      }
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.open(
+        "POST",
+        `https://8d296872-65ca-450a-b572-34eae6228517.mock.pstmn.io/info?dest=${selectedTerminal}`,
+        true
+      );
+      xhr.setRequestHeader(
+        "X-Master-Key",
+        "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
+      );
+
       return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-
-        xhr.open(
-          "POST",
-          "../src/components/Data/Batam/infoTab/infotabbatamdata.json",
-          true
-        );
-        xhr.setRequestHeader(
-          "X-Master-Key",
-          "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
-        );
-
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -39,40 +86,29 @@ function InfoTab() {
           reject(new Error("There was an error with the XHR request"));
         };
 
-        xhr.send(JSON.stringify({}));
+        xhr.send();
       });
     };
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      return () =>
-        fetchJsonData()
-          .then((postData) => {
-            setJsonData(postData);
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-    } catch (error) {
-      console.error("Error initiating XHR request:", error);
-    }
+    fetchJsonData()
+      .then((postData) => {
+        setJsonData(postData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
-    return () => fetchJsonData;
-  }, []); // Empty dependency array ensures this effect runs only once
-
-  // Optional: If you want to prevent any additional requests, you can use the following
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    return () => abortController.abort();
-  }, []);
+    return () => fetchJsonData; // Return the promise directly
+  }, [selectedTerminal]);
 
   return (
     <div className="contents">
+      
       <div className="content">
         <div className="head-content">Device</div>
         <div className="img-container">
@@ -91,7 +127,7 @@ function InfoTab() {
                   {Object.entries(jsonData.data).map(([key, value]) => (
                     <tr key={key}>
                       <th>{key}</th>
-                      <td>{value}</td>
+                      <td>{key === 'isSerialConnected' ? (value ? 'True' : 'False') : value}</td>
                     </tr>
                   ))}
                 </tbody>
