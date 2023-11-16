@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Button, Modal, Select } from "antd";
 import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
 import PropTypes from "prop-types";
 
 const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(""); // Add state for the selected option
+  const [selectedOption, setSelectedOption] = useState("");
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -13,39 +13,35 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    // Call the updatePreferredOcean function with the selected option
-    updatePreferredOcean(selectedOption);
+    updatePreferredOcean({ selectedOption });
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const onChange = (value, option) => {
-    setSelectedOption(option.label); // Update the selected option state with the label
-    handleSelectChange(option.label); // Pass the label to the handleSelectChange function
+  const onChange = (value) => {
+    setSelectedOption(value);
+    handleSelectChange(value);
   };
-  
 
   const onApply = async () => {
     try {
       // Fetch first response
       const response1 = await fetch("/datas/statusData/firstresponse.json");
       const data1 = await response1.json();
-      // Process the response1 if needed
-  
+
       // Fetch second response
       const response2 = await fetch("/datas/statusData/secondresponse.json");
       const data2 = await response2.json();
-      // Process the response2 if needed
-  
+
       // Call the updatePreferredOcean function with the selected option and response data
       updatePreferredOcean({
         selectedOption,
         firstResponseData: data1,
         secondResponseData: data2,
       });
-  
+
       // Close the modal
       setIsModalOpen(false);
     } catch (error) {
@@ -53,7 +49,6 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
       // Handle error if needed
     }
   };
-  
 
   return (
     <>
@@ -80,7 +75,7 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
       </Button>
       <Modal
         className="stspopup"
-        open={isModalOpen}
+        visible={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         closable={false}

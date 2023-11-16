@@ -12,7 +12,7 @@ const { TabPane } = Tabs;
 
 function TabsOps() {
   const [signalValue, setSignalValue] = useState(null);
-  const [selectedTerminal, setSelectedTerminal] = useState(null);
+  const [selectedTerminal, setSelectedTerminal] = useState(1);
 
   useEffect(() => {
     const fetchSignalData = () => {
@@ -61,42 +61,42 @@ function TabsOps() {
   return (
     <div>
       <Tabs className="tabs" tabBarExtraContent={<TerminalLoc onSelectTerminal={handleTerminalSelect} />}>
-        <TabPane tab="Info" key="Infotab" className="Infotab">
+        <TabPane key="Infotab" tab="Info" className="Infotab">
           <div>
             <InfoTab selectedTerminal={selectedTerminal} />
           </div>
         </TabPane>
-        <TabPane tab="Status" key="Statustab">
+        <TabPane key="Statustab" tab="Status">
           <div>
-            <StatusTab />
+            <StatusTab selectedTerminal={selectedTerminal} />
           </div>
         </TabPane>
-        <TabPane tab="EGC" key="EGCtab">
+        <TabPane key="EGCtab" tab="EGC">
           <div>
             <EgcTab />
           </div>
         </TabPane>
-        <TabPane tab="Directory" key="Directorytab">
+        <TabPane key="Directorytab" tab="Directory">
           <div>
             <DirectoryTab />
           </div>
         </TabPane>
-        <TabPane tab="Tx History" key="Tx Historytab">
+        <TabPane key="Tx Historytab" tab="Tx History">
           <div>tab content Tx History tab</div>
         </TabPane>
-        <TabPane tab="Email" key="Emailtab">
+        <TabPane key="Emailtab" tab="Email">
           <div>tab content Email tab</div>
         </TabPane>
-        <TabPane tab="Send Data" key="Send Datatab">
+        <TabPane key="Send Datatab" tab="Send Data">
           <div>tab content Send Data tab</div>
         </TabPane>
-        <TabPane tab="Cmd" key="Cmdtab">
+        <TabPane key="Cmdtab" tab="Cmd">
           <div>tab content Cmd tab</div>
         </TabPane>
-        <TabPane tab="Config" key="Configtab">
+        <TabPane key="Configtab" tab="Config">
           <div>tab content Config tab</div>
         </TabPane>
-        <TabPane tab={`Signal: ${signalValue}`} key="Signaltab">
+        <TabPane key="Signaltab" tab={`Signal: ${signalValue}`}>
           <div>
             <SignalTab />
           </div>

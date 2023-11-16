@@ -1,45 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import UTTerminalImage from "../../../../Img/UT-terminalBatam.jpeg";
-
-export const handlePostRequest = (terminalId) => {
-  // Check if terminalId is null
-  if (terminalId === null) {
-    console.log("Please select a terminal site");
-    return;
-  }
-
-  const xhr = new XMLHttpRequest();
-
-  xhr.open(
-    "POST",
-    `https://8d296872-65ca-450a-b572-34eae6228517.mock.pstmn.io/info?dest=${terminalId}`,
-    true
-  );
-  xhr.setRequestHeader(
-    "X-Master-Key",
-    "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
-  );
-
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        const response = JSON.parse(xhr.responseText);
-        console.log(response);
-      } else {
-        console.error(
-          `Network response for POST request was not ok: ${xhr.status}`
-        );
-      }
-    }
-  };
-
-  xhr.onerror = function () {
-    console.error("There was an error with the XHR request");
-  };
-
-  xhr.send();
-  console.log(`Handling POST request for terminal ID: ${terminalId}`);
-};
 
 function InfoTab({ selectedTerminal }) {
   const [jsonData, setJsonData] = useState(null);
@@ -58,7 +19,7 @@ function InfoTab({ selectedTerminal }) {
 
       xhr.open(
         "POST",
-        `https://8d296872-65ca-450a-b572-34eae6228517.mock.pstmn.io/info?dest=${selectedTerminal}`,
+        `https://5058acfc-6112-4c38-9269-ec42d60e35bc.mock.pstmn.io/info?dest=${selectedTerminal}`,
         true
       );
       xhr.setRequestHeader(
@@ -108,7 +69,6 @@ function InfoTab({ selectedTerminal }) {
 
   return (
     <div className="contents">
-      
       <div className="content">
         <div className="head-content">Device</div>
         <div className="img-container">
@@ -139,5 +99,9 @@ function InfoTab({ selectedTerminal }) {
     </div>
   );
 }
+
+InfoTab.propTypes = {
+  selectedTerminal: PropTypes.number, // Adjust the prop type accordingly
+};
 
 export default InfoTab;

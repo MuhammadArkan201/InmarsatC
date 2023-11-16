@@ -1,39 +1,46 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../../../../../App.css";
-import { Modal } from "antd";
 import PopupStatus from "../../../../Popup/PopupStatus";
 
-// ... (imports)
-
-function StatusTab({ handleSelectChange }) {
+function StatusTab({ selectedTerminal }) {
   const [jsonData, setJsonData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    const fetchData = () => {
+    const fetchJsonData = () => {
+      // Check if selectedTerminal is null
+      console.log("Selected Terminal:", selectedTerminal);
+      if (selectedTerminal === null) {
+        setErrorMessage("Please select a terminal site");
+        return Promise.resolve(null);
+      }
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.open(
+        "POST",
+        `https://5058acfc-6112-4c38-9269-ec42d60e35bc.mock.pstmn.io/status?dest=${selectedTerminal}`,
+        true
+      );
+      xhr.setRequestHeader(
+        "X-Master-Key",
+        "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
+      );
+
       return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-
-        xhr.open("POST", "/datas/statusData/statustabbatamData.json", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-              const data = JSON.parse(xhr.responseText);
-
-              // Check if "Last Response" exists and modify it
-              if (data.data["Last Response"] !== undefined) {
-                const lastResponse = data.data["Last Response"];
-                const lastResponseUTC = getUTCDate(lastResponse);
-                data.data["Last Response (UTC)"] = lastResponseUTC;
-              }
-              // Remove "Last Response" key, whether modified or not
-              delete data.data["Last Response"];
-
-              resolve(data);
+              const response = JSON.parse(xhr.responseText);
+              resolve(response);
             } else {
-              reject(new Error(`Network response was not ok: ${xhr.status}`));
+              reject(
+                new Error(
+                  `Network response for POST request was not ok: ${xhr.status}`
+                )
+              );
             }
           }
         };
@@ -42,28 +49,39 @@ function StatusTab({ handleSelectChange }) {
           reject(new Error("There was an error with the XHR request"));
         };
 
-        // Replace the following line with your actual payload
-        const payload = JSON.stringify({ key: "value" });
-
-        xhr.send(payload);
+        xhr.send(JSON.stringify({ key: "value" }));
       });
     };
 
-    try {
-      return () =>
-        fetchData()
-          .then((data) => {
-            setJsonData(data);
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error);
-          });
-    } catch (error) {
-      console.error("Error initiating XHR request:", error);
-    }
+    setLoading(true);
 
-    return () => fetchData();
-  }, []);
+    fetchJsonData()
+      .then((postData) => {
+        postData.data = {
+          "Last Response (UTC)": getUTCDate(postData.lastResponse),
+          Sync: postData.sync,
+          "TDM Type": postData.tdmType,
+          "TDM Channel": postData.tdmChannel,
+          "Current Channel": postData.currentChannel,
+          "Current Protocol": postData.currentProtocol,
+          "TDM Origin": postData.tdmOrigin,
+          "TDM Frame Number": postData.tdmFrameNumber,
+          "BB Error Rate": postData.bbErrorRate,
+          "Preferred Ocean": postData.preferredOcean,
+        };
+
+        setJsonData(postData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setErrorMessage("Error fetching data");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    return () => fetchJsonData; // Return the promise directly
+  }, [selectedTerminal]);
 
   const getUTCDate = (epochTimestamp) => {
     const date = new Date(epochTimestamp * 1000); // Convert seconds to milliseconds
@@ -81,54 +99,37 @@ function StatusTab({ handleSelectChange }) {
     "TDM Frame Number",
     "BB Error Rate",
     "Preferred Ocean",
-    // Add this line to keep "Last Response" at the bottom
   ];
 
-  const onChange = (value) => {
-    handleSelectChange(value);
-  };
-
-  const updatePreferredOcean = async ({ selectedOption, firstResponseData, secondResponseData }) => {
-    try {
-      const response = await fetch("/datas/statusData/statustabbatamData.json");
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-  
-      const data = await response.json();
-      data.data["Preferred Ocean"] = selectedOption;
-      
-      // Use firstResponseData and secondResponseData as needed
-  
-      // Update the state to trigger a re-render
-      setJsonData(data);
-    } catch (error) {
-      console.error("Error updating Preferred Ocean:", error);
-    }
-  };
-  
-
-return (
+  return (
     <div>
       <div className="content">
         <div className="head-content">Device Status</div>
         <div>
-          {jsonData && (
-            <table className="tbl">
-              <tbody>
-                {orderedKeys.map((key) => (
-                  <tr key={key}>
-                    <th>{key}</th>
-                    <td>
-                      {key === "Last Response"
-                        ? getUTCDate(jsonData.data[key])
-                        : jsonData.data[key]}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+        {loading ? (
+  <p>Loading...</p>
+) : (
+  jsonData && (
+    <table className="tbl">
+      <tbody>
+        {orderedKeys.map((key) => (
+          <tr key={key}>
+            <th>{key}</th>
+            <td>
+              {jsonData.data
+                ? key === "Last Response"
+                  ? getUTCDate(jsonData.data[key])
+                  : jsonData.data[key]
+                : key === "Last Response"
+                ? getUTCDate(jsonData[key])
+                : jsonData[key]}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+)}
         </div>
       </div>
       <div className="content">
@@ -137,16 +138,14 @@ return (
           Please select your preferred ocean region to set specific parameters,
           preferences, or configurations.
         </div>
-        <PopupStatus
-          updatePreferredOcean={updatePreferredOcean}
-          handleSelectChange={onChange}
-        />
+        <PopupStatus />
       </div>
     </div>
   );
 }
 
 StatusTab.propTypes = {
+  selectedTerminal: PropTypes.number,
   handleSelectChange: PropTypes.func.isRequired,
 };
 
