@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import UTTerminalImage from "../../../../Img/UT-terminalBatam.jpeg";
 
@@ -53,7 +53,7 @@ function InfoTab({ selectedTerminal }) {
 
     setLoading(true);
 
-    fetchJsonData()
+    return () => fetchJsonData()
       .then((postData) => {
         setJsonData(postData);
       })
@@ -63,8 +63,6 @@ function InfoTab({ selectedTerminal }) {
       .finally(() => {
         setLoading(false);
       });
-
-    return () => fetchJsonData; // Return the promise directly
   }, [selectedTerminal]);
 
   return (

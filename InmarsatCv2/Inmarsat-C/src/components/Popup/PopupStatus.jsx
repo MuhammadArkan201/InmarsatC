@@ -75,7 +75,7 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
       </Button>
       <Modal
         className="stspopup"
-        visible={isModalOpen}
+        open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         closable={false}

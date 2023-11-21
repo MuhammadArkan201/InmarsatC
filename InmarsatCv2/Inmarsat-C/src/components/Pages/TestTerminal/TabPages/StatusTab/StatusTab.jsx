@@ -55,11 +55,11 @@ function StatusTab({ selectedTerminal }) {
 
     setLoading(true);
 
-    fetchJsonData()
+    return () => fetchJsonData()
       .then((postData) => {
         postData.data = {
           "Last Response (UTC)": getUTCDate(postData.lastResponse),
-          Sync: postData.sync,
+          "Sync": postData.sync,
           "TDM Type": postData.tdmType,
           "TDM Channel": postData.tdmChannel,
           "Current Channel": postData.currentChannel,
@@ -79,8 +79,6 @@ function StatusTab({ selectedTerminal }) {
       .finally(() => {
         setLoading(false);
       });
-
-    return () => fetchJsonData; // Return the promise directly
   }, [selectedTerminal]);
 
   const getUTCDate = (epochTimestamp) => {

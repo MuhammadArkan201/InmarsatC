@@ -1,5 +1,4 @@
-// TabsOps.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import StatusTab from "./StatusTab/StatusTab";
 import SignalTab from "./SignalTab/SignalTab";

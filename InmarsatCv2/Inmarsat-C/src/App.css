@@ -284,6 +284,25 @@
 
 /* Add this CSS to make the DatePicker dropdown smaller */
 .custom-dropdown .ant-picker-panel {
-  height: 290px;
+  height: 270px;
   overflow:auto;
 }
+
+.submitbtn{
+    margin-left: 16px !important;
+    border: 1.2px solid #555555 !important;
+    height: 48px !important;
+    font-weight: bold !important;
+}
+
+@media screen and (max-width: 638px) {
+  .submitbtn {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    border: 1.2px solid #555555 !important;
+    height: 48px !important;
+    font-weight: bold !important;
+  }
+}
+

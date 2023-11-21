@@ -194,7 +194,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
           </div>
         </Radio.Group>
       </Modal>
-      <Button className="btn" onClick={onSubmit}>
+      <Button className="submitbtn" onClick={onSubmit}>
         Submit
       </Button>
     </>
