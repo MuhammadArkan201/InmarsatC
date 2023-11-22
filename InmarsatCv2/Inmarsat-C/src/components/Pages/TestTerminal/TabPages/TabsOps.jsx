@@ -4,8 +4,8 @@ import StatusTab from "./StatusTab/StatusTab";
 import SignalTab from "./SignalTab/SignalTab";
 import EgcTab from "./EgcTab/EgcTab";
 import DirectoryTab from "./DirectoryTab/DirectoryTab";
-import InfoTab from './InfoTab/InfoTab';
-import TerminalLoc from './TerminalLoc';
+import InfoTab from "./InfoTab/InfoTab";
+import TerminalLoc from "./TerminalLoc";
 
 const { TabPane } = Tabs;
 
@@ -18,11 +18,11 @@ function TabsOps() {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open(
-          'POST',  // Change the method to POST
-          '/datas/signaltabData/signaltabData.json',
+          "POST", // Change the method to POST
+          "/datas/signaltabData/signaltabData.json",
           true
         );
-  
+
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -34,24 +34,24 @@ function TabsOps() {
             }
           }
         };
-  
+
         xhr.onerror = function () {
-          reject(new Error('There was an error with the XHR request'));
+          reject(new Error("There was an error with the XHR request"));
         };
-  
+
         xhr.send();
       });
     };
-  
+
     return () =>
       fetchSignalData()
         .then((signal) => {
           setSignalValue(signal);
         })
         .catch((error) => {
-          console.error('Error fetching signal data:', error);
+          console.error("Error fetching signal data:", error);
         });
-  }, []);  
+  }, []);
 
   const handleTerminalSelect = (terminalId) => {
     setSelectedTerminal(terminalId);
@@ -59,7 +59,12 @@ function TabsOps() {
 
   return (
     <div>
-      <Tabs className="tabs" tabBarExtraContent={<TerminalLoc onSelectTerminal={handleTerminalSelect} />}>
+      <Tabs
+        className="tabs"
+        tabBarExtraContent={
+          <TerminalLoc onSelectTerminal={handleTerminalSelect} />
+        }
+      >
         <TabPane key="Infotab" tab="Info" className="Infotab">
           <div>
             <InfoTab selectedTerminal={selectedTerminal} />
@@ -77,7 +82,7 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Directorytab" tab="Directory">
           <div>
-            <DirectoryTab />
+            <DirectoryTab selectedTerminal={selectedTerminal} />
           </div>
         </TabPane>
         <TabPane key="Tx Historytab" tab="Tx History">

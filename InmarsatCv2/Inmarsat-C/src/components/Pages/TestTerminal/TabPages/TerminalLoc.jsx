@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Select } from "antd";
 import PropTypes from "prop-types";
 
@@ -9,63 +9,63 @@ const TerminalLoc = ({ onSelectTerminal }) => {
 
   useEffect(() => {
     if (!dataFetched) {
-      const fetchTerminalData = async () => {
-        try {
-          const response = await fetch(
-            "https://5058acfc-6112-4c38-9269-ec42d60e35bc.mock.pstmn.io/terminal_list?type=inmarsatc",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({}),
-            }
+      const fetchTerminalData = () => {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open(
+            "GET",
+            "https://655c2821ab37729791a9ef77.mockapi.io/api/v1/terminal_list?type=inmarsatc",
+            true
           );
 
-          if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
-          }
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                const data = JSON.parse(xhr.responseText);
+                setTerminals(data[0].data);
+                setDataFetched(true);
+                resolve(data);
+              } else {
+                reject(new Error(`Request failed with status: ${xhr.status}`));
+              }
+            }
+          };
 
-          const data = await response.json();
-          if (Array.isArray(data.data)) {
-            setTerminals(data.data);
-            setDataFetched(true); // Set the flag to true after fetching data
-          } else {
-            throw new Error("Invalid data structure in the API response");
-          }
-        } catch (error) {
-          console.error("Error fetching terminal data:", error);
-        }
+          xhr.onerror = function () {
+            reject(new Error("There was a network error"));
+          };
+
+          xhr.send();
+        });
       };
 
-      return () => fetchTerminalData();
+      return()=>fetchTerminalData().catch((error) => {
+        console.error("Error fetching terminal data:", error);
+      });
     }
   }, []);
 
-  const handleChange = (value, option) => {
+  const handleTerminalChange = (value) => {
     setSelectedTerminal(value);
-  
-    
-    const terminalId = option?.terminal_id;
-    if (terminalId) {
-      onSelectTerminal(terminalId);
+    const selectedTerminalObject = terminals.find(
+      (terminal) => terminal.terminal_location === value
+    );
+    if (selectedTerminalObject) {
+      onSelectTerminal(selectedTerminalObject.terminal_id);
     }
   };
-  
 
   return (
-    <div>
-      <Select
-        value={selectedTerminal}
-        style={{ width: 120 }}
-        onChange={handleChange}
-        options={terminals.map((terminal) => ({
-          value: terminal.terminal_id,
-          label: terminal.terminal_location,
-          terminal_id: terminal.terminal_id,
-        }))}
-      />
-    </div>
+    <Select
+      value={selectedTerminal}
+      style={{ width: 120 }}
+      onChange={handleTerminalChange}
+      options={terminals.map((terminal) => ({
+        value: terminal.terminal_location,
+        label: terminal.terminal_location,
+        key: terminal.terminal_id,
+      }))}
+    />
   );
 };
 

@@ -6,25 +6,20 @@ function InfoTab({ selectedTerminal }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
     const fetchJsonData = () => {
-      // Check if selectedTerminal is null
       if (selectedTerminal === null) {
         setErrorMessage("Please select a terminal site");
         return Promise.resolve(null);
       }
 
       const xhr = new XMLHttpRequest();
-
       xhr.open(
-        "POST",
-        `https://5058acfc-6112-4c38-9269-ec42d60e35bc.mock.pstmn.io/info?dest=${selectedTerminal}`,
+        "GET",
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/info?dest=${selectedTerminal}`,
         true
-      );
-      xhr.setRequestHeader(
-        "X-Master-Key",
-        "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
       );
 
       return new Promise((resolve, reject) => {
@@ -51,19 +46,23 @@ function InfoTab({ selectedTerminal }) {
       });
     };
 
-    setLoading(true);
+    if (!isInitialRender && selectedTerminal !== null) {
+      setLoading(true);
 
-    return () => fetchJsonData()
-      .then((postData) => {
-        setJsonData(postData);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [selectedTerminal]);
+      fetchJsonData()
+        .then((postData) => {
+          setJsonData(postData);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+
+    setIsInitialRender(false);
+  }, [selectedTerminal, isInitialRender]);
 
   return (
     <div className="contents">
@@ -82,16 +81,25 @@ function InfoTab({ selectedTerminal }) {
             jsonData && (
               <table className="tbl">
                 <tbody>
-                  {Object.entries(jsonData.data).map(([key, value]) => (
-                    <tr key={key}>
-                      <th>{key}</th>
-                      <td>{key === 'isSerialConnected' ? (value ? 'True' : 'False') : value}</td>
-                    </tr>
-                  ))}
+                  {jsonData.map((item) =>
+                    Object.entries(item.data).map(([key, value]) => (
+                      <tr key={key}>
+                        <th>{key}</th>
+                        <td>
+                          {typeof value === "boolean"
+                            ? value
+                              ? "True"
+                              : "False"
+                            : value}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             )
           )}
+          {errorMessage && <p>{errorMessage}</p>}
         </div>
       </div>
     </div>
@@ -99,7 +107,7 @@ function InfoTab({ selectedTerminal }) {
 }
 
 InfoTab.propTypes = {
-  selectedTerminal: PropTypes.number, // Adjust the prop type accordingly
+  selectedTerminal: PropTypes.number,
 };
 
 export default InfoTab;
