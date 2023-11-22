@@ -15,32 +15,52 @@ function TabsOps() {
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       try {
         if (!isInitialRender && selectedTerminal !== null) {
           // setLoading(true); // Assuming you have setLoading in your code, uncomment this line if needed
-          const response = await fetch(
-            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`
+
+          const xhr = new XMLHttpRequest();
+          xhr.open(
+            "GET",
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`,
+            true
           );
 
-          if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
-          }
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                const jsonData = JSON.parse(xhr.responseText);
+                const signal = jsonData[0]?.data?.signal ?? null;
+                setSignalValue(signal);
+              } else {
+                console.error(`Network response was not ok: ${xhr.status}`);
+              }
+              // setLoading(false); // Assuming you have setLoading in your code, uncomment this line if needed
+            }
+          };
 
-          const jsonData = await response.json();
-          const signal = jsonData[0]?.data?.signal ?? null;
-          setSignalValue(signal);
+          xhr.onerror = function () {
+            console.error("There was an error with the XHR request");
+            // setLoading(false); // Assuming you have setLoading in your code, uncomment this line if needed
+          };
+
+          xhr.send();
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        // setLoading(false); // Assuming you have setLoading in your code, uncomment this line if needed
+        setIsInitialRender(false);
       }
-
-      setIsInitialRender(false);
     };
 
-    fetchData();
+    fetchData(); // Initial fetch
+
+    const intervalId = setInterval(() => {
+      fetchData(); // Fetch data every 10 minutes
+    }, 10 * 60 * 1000);
+
+    return () => clearInterval(intervalId); // Clear the interval on component unmount
   }, [selectedTerminal, isInitialRender]);
 
   const handleTerminalSelect = (terminalId) => {
