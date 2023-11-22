@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import StatusTab from "./StatusTab/StatusTab";
 import SignalTab from "./SignalTab/SignalTab";
@@ -12,46 +12,36 @@ const { TabPane } = Tabs;
 function TabsOps() {
   const [signalValue, setSignalValue] = useState(null);
   const [selectedTerminal, setSelectedTerminal] = useState(1);
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
-    const fetchSignalData = () => {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open(
-          "POST", // Change the method to POST
-          "/datas/signaltabData/signaltabData.json",
-          true
-        );
+    const fetchData = async () => {
+      try {
+        if (!isInitialRender && selectedTerminal !== null) {
+          // setLoading(true); // Assuming you have setLoading in your code, uncomment this line if needed
+          const response = await fetch(
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`
+          );
 
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              const jsonData = JSON.parse(xhr.responseText);
-              const signal = jsonData.data.signal;
-              resolve(signal);
-            } else {
-              reject(new Error(`Network response was not ok: ${xhr.status}`));
-            }
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
           }
-        };
 
-        xhr.onerror = function () {
-          reject(new Error("There was an error with the XHR request"));
-        };
+          const jsonData = await response.json();
+          const signal = jsonData[0]?.data?.signal ?? null;
+          setSignalValue(signal);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        // setLoading(false); // Assuming you have setLoading in your code, uncomment this line if needed
+      }
 
-        xhr.send();
-      });
+      setIsInitialRender(false);
     };
 
-    return () =>
-      fetchSignalData()
-        .then((signal) => {
-          setSignalValue(signal);
-        })
-        .catch((error) => {
-          console.error("Error fetching signal data:", error);
-        });
-  }, []);
+    fetchData();
+  }, [selectedTerminal, isInitialRender]);
 
   const handleTerminalSelect = (terminalId) => {
     setSelectedTerminal(terminalId);
@@ -72,7 +62,7 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Statustab" tab="Status">
           <div>
-            <StatusTab selectedTerminal={selectedTerminal} />
+            <StatusTab  />
           </div>
         </TabPane>
         <TabPane key="EGCtab" tab="EGC">
@@ -82,7 +72,7 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Directorytab" tab="Directory">
           <div>
-            <DirectoryTab selectedTerminal={selectedTerminal} />
+            <DirectoryTab  />
           </div>
         </TabPane>
         <TabPane key="Tx Historytab" tab="Tx History">
@@ -102,7 +92,7 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Signaltab" tab={`Signal: ${signalValue}`}>
           <div>
-            <SignalTab />
+            <SignalTab selectedTerminal= {selectedTerminal}/>
           </div>
         </TabPane>
       </Tabs>
