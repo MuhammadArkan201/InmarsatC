@@ -1,7 +1,9 @@
+// SignalLevel.jsx
+
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js";
 import {
+  Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -10,6 +12,7 @@ import {
   Legend,
 } from "chart.js";
 import PropTypes from "prop-types";
+import "../../../../../App.css";
 import "./SignalLevel.css";
 
 ChartJS.register(
@@ -20,8 +23,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-import "../../../../../App.css";
 
 function SignalLevel({ selectedRange, selectedTerminal }) {
   const [jsonData, setJsonData] = useState(null);
@@ -39,7 +40,7 @@ function SignalLevel({ selectedRange, selectedTerminal }) {
       const xhr = new XMLHttpRequest();
       xhr.open(
         "GET",
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`,
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}`,
         true
       );
 
@@ -95,27 +96,36 @@ function SignalLevel({ selectedRange, selectedTerminal }) {
     const startTimestamp = startDate.unix();
     const endTimestamp = endDate.unix();
 
+    // Flatten the array of timestamp-value pairs
+    const flattenedData = jsonData.flatMap((item) => item.data);
+
     // Filter data based on the selected date range
-    const filteredData = jsonData.find(
-      (item) => item.data.ts >= startTimestamp && item.data.ts <= endTimestamp
+    const filteredData = flattenedData.filter(
+      (pair) => pair[0] >= startTimestamp && pair[0] <= endTimestamp
     );
 
-    if (filteredData) {
-      const epochTimestamp = filteredData.data.ts;
-      const date = new Date(epochTimestamp * 1000);
-      const optionsDate = {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      };
-      const formattedDate = date.toLocaleDateString("en-US", optionsDate);
+    if (filteredData.length > 0) {
+      const labels = filteredData.map((pair) => {
+        const epochTimestamp = pair[0];
+        const date = new Date(epochTimestamp * 1000);
+
+        // Format date, hour, and minute
+        const formattedDate = date.toLocaleDateString("en-US");
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+
+        return `${formattedDate} ${formattedTime}`;
+      });
 
       const data = {
-        labels: Array(6).fill(formattedDate),
+        labels: labels,
         datasets: [
           {
             label: "Signal Strength",
-            data: Array(6).fill(filteredData.data.signal),
+            data: filteredData.map((pair) => pair[1]),
             backgroundColor: "#46B39E",
             stack: "stack1",
             barPercentage: 1,
@@ -150,15 +160,20 @@ function SignalLevel({ selectedRange, selectedTerminal }) {
         responsive: true,
       };
 
+      // Dynamically set the container width if there are more than 10 labels
+      const containerWidth = labels.length > 10 ? labels.length * 50 : null;
+
       return (
         <div className="chart-container">
-          <Bar data={data} options={options} />
+          <div className="containerBody" style={{containerWidth}}>
+            <Bar data={data} options={options} />
+          </div>
         </div>
       );
     }
   }
 
-  return null; // Return null if selectedRange is not valid or no matching data
+  return null;
 }
 
 SignalLevel.propTypes = {

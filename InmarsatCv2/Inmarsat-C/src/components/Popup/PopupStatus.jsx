@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal, Select } from "antd";
 import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
 import PropTypes from "prop-types";
@@ -13,6 +13,7 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
+    // Use the updatePreferredOcean function passed from the parent component
     updatePreferredOcean({ selectedOption });
   };
 

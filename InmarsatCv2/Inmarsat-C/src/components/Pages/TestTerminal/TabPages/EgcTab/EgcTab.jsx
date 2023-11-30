@@ -1,63 +1,52 @@
-import { useState, useEffect } from "react";
+// egctab.jsx
+import React, { useState, useEffect } from "react";
 import "../../../../../App.css";
 import Popup from "../../../../Popup/Popup";
 import EgcTable from "./EgcTable";
+import PropTypes from "prop-types";
 
-const EgcTab = () => {
+function EgcTab({ selectedTerminal }) {
   const [showTable, setShowTable] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [rangePickerValue, setRangePickerValue] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true; // Flag to prevent state updates on an unmounted component
-
-    const fetchData = () => {
-      return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/datas/egctabData/egctabData.json", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              const data = JSON.parse(xhr.responseText);
-              resolve(data.data);
-            } else {
-              reject(new Error(`Network response was not ok: ${xhr.status}`));
-            }
-          }
-        };
-
-        xhr.onerror = function () {
-          reject(new Error("There was an error with the XHR request"));
-        };
-
-        // Replace the following line with your actual payload
-        const payload = JSON.stringify({ key: "value" });
-
-        xhr.send(payload);
-      });
-    };
-
-    if (showTable && isMounted && tableData.length === 0) {
-      fetchData()
-        .then((data) => {
-          if (isMounted) {
-            setTableData(data); // Store the fetched data
-            setLoading(false); // Set loading state to false once data is loaded
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching data: ", error);
+    let isMounted = true;
+  
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}`
+        );
+  
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        console.log("Data received in EgcTab:", data);
+  
+        if (isMounted) {
+          setTableData(data);
           setLoading(false);
-        });
-    }
-
-    return () => {
-      isMounted = false; // Set the isMounted flag to false on unmount
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        setLoading(false);
+      }
     };
-  }, [showTable]); // Run when showTable changes
+  
+    if (showTable && isMounted && selectedTerminal !== tableData.selectedTerminal) {
+      // Clear existing tableData when the terminal changes
+      setTableData([]);
+      fetchData();
+    }
+  
+    return () => {
+      isMounted = false;
+    };
+  }, [showTable, selectedTerminal]);  // Include selectedTerminal as a dependency
 
   return (
     <div className="contents">
@@ -69,23 +58,25 @@ const EgcTab = () => {
         />
       </div>
       <div className="content">
-        <div className="head-content">
-          Records from {rangePickerValue.join(" ,until ")}
-        </div>
+        <div className="head-content">Records</div>
         {loading ? (
           <p>Please select the date</p>
         ) : (
           showTable &&
-          tableData.length > 0 && (
+          tableData?.length > 0 && (
             <EgcTable
               rangePickerValue={rangePickerValue}
               tableData={tableData}
+              selectedTerminal={selectedTerminal}
             />
           )
         )}
       </div>
     </div>
   );
-};
+}
+
+EgcTab.propTypes = { selectedTerminal: PropTypes.number.isRequired };
 
 export default EgcTab;
+

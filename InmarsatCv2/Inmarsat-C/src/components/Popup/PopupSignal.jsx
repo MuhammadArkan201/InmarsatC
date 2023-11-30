@@ -20,12 +20,13 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   const [radioValue, setRadioValue] = useState(1);
   const [outerDate, setOuterDate] = useState(null);
   const [resolution, setResolution] = useState(null);
-  const [selectValue, setSelectValue] = useState(null); // State to hold the resolution value
+  const [selectValue, setSelectValue] = useState(null);
 
   const onChangeNumber = (value) => {
     console.log("changed", value);
     setResolution(value);
   };
+
   const showModal = () => {
     setOpen(true);
   };
@@ -46,20 +47,19 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
     if (dateValue) {
       setOuterDate(dateValue);
       handleCancel();
-      // You might perform other operations here
     }
   };
 
   const onSubmit = async () => {
     if (dateValue) {
-      onShowSignal(); // Change to onShowSignal
+      onShowSignal();
       onRangePickerChange(dateValue);
     }
   };
 
   const onDatePickerChange = (date, dateString) => {
     if (radioValue === 1) {
-      handleSelectChange(dateString); // Pass the selected value to handleSelectChange
+      handleSelectChange(dateString);
     } else if (radioValue === 2) {
       const currentdate = date ? date : null;
       const startlive = moment();
@@ -71,7 +71,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   };
 
   const handleSelectChange = (value) => {
-    setSelectValue(value); // Update the Select value state
+    setSelectValue(value);
     const selectedHours = parseInt(value, 10);
     if (!isNaN(selectedHours)) {
       const start = moment().subtract(selectedHours, "hours");
@@ -149,31 +149,31 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
           </div>
           <div>
             <Space size={12}>
-            <DatePicker
-                  className="datepicker-format"
-                  disabled={radioValue !== 2}
-                  showTime={{ format: "HH:mm" }}
-                  format="YYYY-MM-DD HH:mm"
-                  dropdownClassName="custom-dropdown" // Add this line if needed
-                  onChange={(range) => onDatePickerChange(range)}
-                />
-              </Space>
-            </div>
-            <div className="radiobtn">
-              <Radio className="radio-text" value={3}>
-                Historic data
-              </Radio>
-            </div>
-            <div>
-              <Space size={12}>
-                <RangePicker
-                  className="datepicker-format"
-                  showTime={{ format: "HH:mm" }}
-                  format="YYYY-MM-DD HH:mm"
-                  onChange={onDatePickerChange}
-                  dropdownClassName="custom-dropdown" // Add this line if needed
-                  disabled={radioValue !== 3}
-                />
+              <DatePicker
+                className="datepicker-format"
+                disabled={radioValue !== 2}
+                showTime={{ format: "HH:mm" }}
+                format="YYYY-MM-DD HH:mm"
+                dropdownClassName="custom-dropdown"
+                onChange={(range) => onDatePickerChange(range)}
+              />
+            </Space>
+          </div>
+          <div className="radiobtn">
+            <Radio className="radio-text" value={3}>
+              Historic data
+            </Radio>
+          </div>
+          <div>
+            <Space size={12}>
+              <RangePicker
+                className="datepicker-format"
+                showTime={{ format: "HH:mm" }}
+                format="YYYY-MM-DD HH:mm"
+                onChange={onDatePickerChange}
+                dropdownClassName="custom-dropdown"
+                disabled={radioValue !== 3}
+              />
             </Space>
           </div>
           <div>
@@ -202,7 +202,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
 };
 
 PopupSignal.propTypes = {
-  onShowSignal: PropTypes.func.isRequired, // Change to onShowSignal
+  onShowSignal: PropTypes.func.isRequired,
   onRangePickerChange: PropTypes.func.isRequired,
 };
 

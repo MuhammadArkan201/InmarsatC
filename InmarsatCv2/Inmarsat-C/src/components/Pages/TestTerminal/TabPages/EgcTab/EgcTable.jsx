@@ -4,7 +4,7 @@ import "./egcTable.css";
 import moment from "moment";
 import PropTypes from "prop-types";
 
-const EgcTable = ({ rangePickerValue, tableData }) => {
+const EgcTable = ({ rangePickerValue, tableData, selectedTerminal }) => {
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [apiResponseData, setApiResponseData] = useState({ data: [] });
@@ -37,7 +37,6 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       title: "Priority",
       dataIndex: "priority",
       key: "priority",
-
       render: (text) => convertPriority(text),
     },
     {
@@ -84,80 +83,98 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
       ),
     },
   ];
+  
+  const [messagePopupData, setMessagePopupData] = useState(null);
 
-  const handleDataClick = async (record) => {
+  const handleDataClick = (record) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/datas/egctabData/messagepopup.json", true);
+    
+    xhr.open("GET", "https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=1", true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          const messagePopupData = JSON.parse(xhr.responseText);
-
-          const messageToShow = messagePopupData.data.find(
-            (data) => data.sequence === record.sequence
-          );
-
-          setSelectedRecord({ ...record, message: messageToShow });
-          setOpen(true);
-        } else {
-          console.error(`Network response was not ok: ${xhr.status}`);
-        }
+    xhr.onload = function () {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const messagePopupData = JSON.parse(xhr.responseText);
+        console.log("API Response:", messagePopupData);
+        setMessagePopupData(messagePopupData[0]?.data);
+        setSelectedRecord({ ...record, message: messagePopupData });
+        setOpen(true);
+      } else {
+        console.error("Request failed with status:", xhr.status);
       }
     };
 
     xhr.onerror = function () {
-      console.error("There was an error with the XHR request");
+      console.error("Network request failed");
     };
 
-    // Replace the following line with your actual payload
-    const payload = JSON.stringify({ key: "value" });
-
-    xhr.send(payload);
+    xhr.send();
   };
-
+  
   const handleModalCancel = () => {
     setOpen(false);
   };
 
   useEffect(() => {
-    console.log("Selected date range: ", rangePickerValue); // Check the selected date range
+    console.log("Selected date range: ", rangePickerValue);
 
-    const filteredData = tableData.filter((item) => {
-      const timestamp = item.timestamp;
-      const [startDate, endDate] = rangePickerValue;
+    const apiData = tableData[0]; // Assuming the data is an array with the first element containing the actual data
 
-      console.log(
-        "Timestamp, Start, End: ",
-        timestamp,
-        startDate.unix(),
-        endDate.unix()
-      ); // Verify timestamp and range values
+    if (apiData) {
+      const transformedData = apiData.data.map((item) => {
+        return {
+          les: item[0],
+          service: item[1],
+          priority: item[2],
+          lang: item[3],
+          timestamp: item[4],
+          bytes: item[5],
+          sequence: item[6],
+          error: item[7],
+          repetition: item[8],
+          filename: item[9],
+        };
+      });
 
-      // Filter the data based on the date range selected
-      return timestamp >= startDate.unix() && timestamp <= endDate.unix();
-    });
+      const filteredData = transformedData.filter((item) => {
+        const timestamp = item.timestamp; // Adjust this line based on your data structure
+        const [startDate, endDate] = rangePickerValue;
 
-    console.log("Filtered Data: ", filteredData); // Log the filtered data
+        // Convert timestamp to seconds if it's in milliseconds
+        const timestampInSeconds =
+          timestamp < 1e12 ? timestamp : Math.floor(timestamp / 1000);
 
-    setApiResponseData({ data: filteredData });
+        console.log(
+          "Timestamp, Start, End: ",
+          moment(timestampInSeconds).format("YYYY-MM-DD HH:mm"),
+          startDate.unix(),
+          endDate.unix()
+        );
+
+        return (
+          timestampInSeconds >= startDate.unix() &&
+          timestampInSeconds <= endDate.unix()
+        );
+      });
+
+      console.log("Transformed Data: ", transformedData);
+      console.log("Filtered Data: ", filteredData);
+
+      setApiResponseData({ data: filteredData });
+    }
   }, [rangePickerValue, tableData]);
 
-  const modalContent = selectedRecord ? (
+  const modalContent = messagePopupData ? (
     <div>
-      <p>
-        LES {selectedRecord.les} - {selectedRecord.message?.msg} -{" "}
-        {selectedRecord.message?.area} -{" "}
-        {selectedRecord.message?.message.split("\n").map((line, index) => (
-          <React.Fragment key={index}>
-            {line}
-            <br />
-          </React.Fragment>
-        ))}
-      </p>
+      {messagePopupData[3].split("\n").map((line, index) => (
+        <p key={index}>{line}</p>
+      ))}
     </div>
-  ) : null;
+  ) : (
+    <div>No data available</div>
+  );
+  
+  
 
   const totalRecords =
     apiResponseData.count ||
@@ -182,10 +199,10 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
             return col;
           })}
           bordered={true}
-          dataSource={apiResponseData.data} // Update this line
+          dataSource={apiResponseData.data}
           pagination={{ pageSize: 5, position: ["bottomCenter"] }}
           rowClassName={(record, index) => (index % 2 === 0 ? "even-row" : "")}
-          scroll={{ x: 768 }} // Horizontal scroll at 768px screen width
+          scroll={{ x: 768 }}
         />
         <Modal
           className="msg-popup-modal"
@@ -204,6 +221,7 @@ const EgcTable = ({ rangePickerValue, tableData }) => {
 EgcTable.propTypes = {
   rangePickerValue: PropTypes.array.isRequired,
   tableData: PropTypes.array.isRequired,
+  selectedTerminal: PropTypes.number.isRequired,
 };
 
 export default EgcTable;

@@ -23,7 +23,7 @@ function TabsOps() {
           const xhr = new XMLHttpRequest();
           xhr.open(
             "GET",
-            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`,
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}`,
             true
           );
 
@@ -31,7 +31,8 @@ function TabsOps() {
             if (xhr.readyState === 4) {
               if (xhr.status === 200) {
                 const jsonData = JSON.parse(xhr.responseText);
-                const signal = jsonData[0]?.data?.signal ?? null;
+                const lastDataPoint = jsonData[0]?.data?.slice(-1)[0] ?? null;
+                const signal = lastDataPoint ? lastDataPoint[1] : null;
                 setSignalValue(signal);
               } else {
                 console.error(`Network response was not ok: ${xhr.status}`);
@@ -66,7 +67,6 @@ function TabsOps() {
   const handleTerminalSelect = (terminalId) => {
     setSelectedTerminal(terminalId);
   };
-
   return (
     <div>
       <Tabs
@@ -82,17 +82,17 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Statustab" tab="Status">
           <div>
-            <StatusTab  />
+            <StatusTab selectedTerminal={selectedTerminal} />
           </div>
         </TabPane>
         <TabPane key="EGCtab" tab="EGC">
           <div>
-            <EgcTab />
+            <EgcTab selectedTerminal={selectedTerminal}/>
           </div>
         </TabPane>
         <TabPane key="Directorytab" tab="Directory">
           <div>
-            <DirectoryTab  />
+            <DirectoryTab />
           </div>
         </TabPane>
         <TabPane key="Tx Historytab" tab="Tx History">
@@ -112,7 +112,7 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Signaltab" tab={`Signal: ${signalValue}`}>
           <div>
-            <SignalTab selectedTerminal= {selectedTerminal}/>
+            <SignalTab selectedTerminal={selectedTerminal} />
           </div>
         </TabPane>
       </Tabs>

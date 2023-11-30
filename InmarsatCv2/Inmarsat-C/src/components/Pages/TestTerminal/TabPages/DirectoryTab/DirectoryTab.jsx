@@ -1,108 +1,80 @@
-import React, { useEffect, useState } from "react";
+// egctab.jsx
+import React, { useState, useEffect } from "react";
+import "../../../../../App.css";
+import Popup from "../../../../Popup/Popup";
+import DirectoryTab from "./DirectoryTab";
 import PropTypes from "prop-types";
-import UTTerminalImage from "../../../../Img/UT-terminalBatam.jpeg";
 
-function DirectoryTab({ selectedTerminal }) {
-  const [jsonData, setJsonData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+function EgcTab({ selectedTerminal }) {
+  const [showTable, setShowTable] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [rangePickerValue, setRangePickerValue] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchJsonData = () => {
-      // Check if selectedTerminal is null
-      if (selectedTerminal === null) {
-        setErrorMessage("Please select a terminal site");
-        return Promise.resolve(null);
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Data received in EgcTab:", data);
+
+        if (isMounted) {
+          setTableData(data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        setLoading(false);
       }
-
-      const xhr = new XMLHttpRequest();
-
-      xhr.open(
-        "POST",
-        `https://5058acfc-6112-4c38-9269-ec42d60e35bc.mock.pstmn.io/info?dest=${selectedTerminal}`,
-        true
-      );
-      xhr.setRequestHeader(
-        "X-Master-Key",
-        "$2a$10$FXmzFTPkKCsz6s7v4ayi8.MxKr9HT64IlQGyObHjs0twnRvB1.vxe"
-      );
-
-      return new Promise((resolve, reject) => {
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              const response = JSON.parse(xhr.responseText);
-              resolve(response);
-            } else {
-              reject(
-                new Error(
-                  `Network response for POST request was not ok: ${xhr.status}`
-                )
-              );
-            }
-          }
-        };
-
-        xhr.onerror = function () {
-          reject(new Error("There was an error with the XHR request"));
-        };
-
-        xhr.send();
-      });
     };
 
-    setLoading(true);
+    if (showTable && isMounted && tableData.length === 0) {
+      fetchData();
+    }
 
-    fetchJsonData()
-      .then((postData) => {
-        setJsonData(postData);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
-    return () => fetchJsonData; // Return the promise directly
-  }, [selectedTerminal]);
+    return () => {
+      isMounted = false;
+    };
+  }, [showTable, selectedTerminal, tableData.length]);
 
   return (
     <div className="contents">
       <div className="content">
-        <div className="head-content">Device</div>
-        <div className="img-container">
-          <img src={UTTerminalImage} alt="UT Terminal" />
-        </div>
+        <div className="head-content">EGC Messages</div>
+        <Popup
+          onShowTable={() => setShowTable(true)}
+          onRangePickerChange={(value) => setRangePickerValue(value)}
+        />
       </div>
       <div className="content">
-        <div className="head-content">Device Information</div>
-        <div>
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            jsonData && (
-              <table className="tbl">
-                <tbody>
-                  {Object.entries(jsonData.data).map(([key, value]) => (
-                    <tr key={key}>
-                      <th>{key}</th>
-                      <td>{key === 'isSerialConnected' ? (value ? 'True' : 'False') : value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )
-          )}
-        </div>
+        <div className="head-content">Records</div>
+        {loading ? (
+          <p>Please select the date</p>
+        ) : (
+          showTable &&
+          tableData?.length > 0 && (
+            <DirectoryTab
+              rangePickerValue={rangePickerValue}
+              tableData={tableData}
+              selectedTerminal={selectedTerminal}
+            />
+          )
+        )}
       </div>
     </div>
   );
 }
 
-DirectoryTab.propTypes = {
-  selectedTerminal: PropTypes.number, // Adjust the prop type accordingly
-};
+EgcTab.propTypes = { selectedTerminal: PropTypes.number.isRequired };
 
-export default DirectoryTab;
+export default EgcTab;
 

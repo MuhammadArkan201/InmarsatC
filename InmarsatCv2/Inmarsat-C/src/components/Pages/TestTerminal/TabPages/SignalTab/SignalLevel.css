@@ -1,3 +1,23 @@
+/* SignalLevel.css */
+
 .chart-container {
-    height:210px !important;
-  }
+  overflow-x: scroll;
+  height: 250px !important;
+  /* Add any other styles you need */
+}
+
+.containerBody {
+  width: 2000px;
+  height: 100%;
+  max-width: 1050px; /* Add the unit (e.g., px) */
+  margin-right: 24px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .containerBody {
+    width:max-content;
+    height: 100%;
+    max-width: 700px; /* Add the unit (e.g., px) */
+    
+  
+  }}
