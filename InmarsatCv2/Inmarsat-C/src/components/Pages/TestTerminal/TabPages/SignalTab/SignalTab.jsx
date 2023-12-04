@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import "../../../../../App.css";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
+import "../../../../../App.css";
 import DropdownSignal from "./DropdownSignal";
 import PopupSignal from "../../../../Popup/PopupSignal";
 import SignalLevel from "./SignalLevel";
 
-function SignalTab({ selectedTerminal }) {
+function SignalTab({ selectedTerminal, activeTab }) {
   const [selectedRange, setSelectedRange] = useState(null);
   const [showSignal, setShowSignal] = useState(false);
 
@@ -33,6 +32,7 @@ function SignalTab({ selectedTerminal }) {
             <SignalLevel
               selectedRange={selectedRange}
               selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
             />
           </div>
         </div>
@@ -42,8 +42,8 @@ function SignalTab({ selectedTerminal }) {
 }
 
 SignalTab.propTypes = {
-  selectedRange: PropTypes.array,
   selectedTerminal: PropTypes.number,
+  activeTab: PropTypes.string,
 };
 
 export default SignalTab;

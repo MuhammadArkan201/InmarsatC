@@ -5,7 +5,7 @@ import Popup from "../../../../Popup/Popup";
 import EgcTable from "./EgcTable";
 import PropTypes from "prop-types";
 
-function EgcTab({ selectedTerminal }) {
+function EgcTab({ selectedTerminal, activeTab }) {
   const [showTable, setShowTable] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [rangePickerValue, setRangePickerValue] = useState([]);
@@ -13,40 +13,47 @@ function EgcTab({ selectedTerminal }) {
 
   useEffect(() => {
     let isMounted = true;
-  
+
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}`
-        );
-  
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
-        }
-  
-        const data = await response.json();
-        console.log("Data received in EgcTab:", data);
-  
-        if (isMounted) {
-          setTableData(data);
-          setLoading(false);
+        // Only fetch data if the tab is active
+        if (activeTab === "EGCtab") {
+          const response = await fetch(
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}`
+          );
+
+          if (!response.ok) {
+            throw new Error(`Network response was not ok: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log("Data received in EgcTab:", data);
+
+          if (isMounted) {
+            setTableData(data);
+            setLoading(false);
+          }
         }
       } catch (error) {
         console.error("Error fetching data: ", error);
         setLoading(false);
       }
     };
-  
-    if (showTable && isMounted && selectedTerminal !== tableData.selectedTerminal) {
+
+    if (
+      showTable &&
+      isMounted &&
+      selectedTerminal !== tableData.selectedTerminal
+    ) {
       // Clear existing tableData when the terminal changes
       setTableData([]);
       fetchData();
     }
-  
+
     return () => {
       isMounted = false;
     };
-  }, [showTable, selectedTerminal]);  // Include selectedTerminal as a dependency
+  }, [showTable, selectedTerminal, activeTab]); // Include selectedTerminal and activeTab as dependencies
 
   return (
     <div className="contents">
@@ -76,7 +83,9 @@ function EgcTab({ selectedTerminal }) {
   );
 }
 
-EgcTab.propTypes = { selectedTerminal: PropTypes.number.isRequired };
+EgcTab.propTypes = {
+  selectedTerminal: PropTypes.number.isRequired,
+  activeTab: PropTypes.string.isRequired,
+};
 
 export default EgcTab;
-

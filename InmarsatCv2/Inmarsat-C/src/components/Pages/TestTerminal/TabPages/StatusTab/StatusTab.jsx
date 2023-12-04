@@ -1,21 +1,25 @@
+// StatusTab.jsx
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../../../../../App.css";
 import PopupStatus from "../../../../Popup/PopupStatus";
 
-function StatusTab({ selectedTerminal }) {
+function StatusTab({ selectedTerminal, activeTab }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [preferredOcean, setPreferredOcean] = useState("");
+  const [isInitialRender, setIsInitialRender] = useState(true); 
 
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        if (selectedTerminal === null) {
-          setErrorMessage("Please select a terminal site");
+        // Check if the current tab is active before making the API call
+        if (activeTab !== "Statustab" || selectedTerminal === null) {
           return;
         }
+
+        setLoading(true);
 
         const response = await fetch(
           `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`
@@ -36,20 +40,23 @@ function StatusTab({ selectedTerminal }) {
       }
     };
 
-    setLoading(true);
-    fetchJsonData();
-  }, [selectedTerminal]);
+    // Only fetch data if the current tab is active and it's not the initial render
+    if (!isInitialRender) {
+      fetchJsonData();
+    }
+
+    // Update isInitialRender after the first render
+    setIsInitialRender(false);
+  }, [selectedTerminal, isInitialRender, activeTab]);
 
   const getUTCDate = (epochTimestamp) => {
-    const date = new Date(epochTimestamp * 1000); // Convert seconds to milliseconds
+    const date = new Date(epochTimestamp * 1000);
     return date.toUTCString();
   };
 
   const getProperties = (data) => {
-    // Exclude 'lastResponse' from the properties
     const { lastResponse, ...otherProperties } = data;
 
-    // Render the properties as table rows
     return Object.entries(otherProperties).map(([key, value]) => (
       <tr key={key}>
         <th>{key}:</th>
@@ -65,12 +72,13 @@ function StatusTab({ selectedTerminal }) {
   const updatePreferredOcean = async ({ selectedOption, firstResponseData, secondResponseData }) => {
     // Update the preferredOcean in the JSON data
     const updatedJsonData = jsonData.map((item) => {
-      // Check if the item corresponds to the selectedTerminal
       if (item.dest === selectedTerminal) {
-        // Update the preferredOcean property
         return {
           ...item,
-          preferredOcean: selectedOption,
+          data: {
+            ...item.data,
+            preferredOcean: selectedOption,
+          },
         };
       }
       return item;
@@ -116,12 +124,10 @@ function StatusTab({ selectedTerminal }) {
                 <tbody>
                   {jsonData.map((item, index) => (
                     <React.Fragment key={index}>
-                      {/* Render 'lastResponse' using getUTCDate */}
                       <tr>
                         <th>Last Response Time:</th>
                         <td>{getUTCDate(item.data.lastResponse)}</td>
                       </tr>
-                      {/* Render other properties using getProperties */}
                       {getProperties(item.data)}
                     </React.Fragment>
                   ))}
@@ -135,7 +141,6 @@ function StatusTab({ selectedTerminal }) {
       <div className="content">
         <div className="head-content">Select a Region in the Ocean</div>
         <div>
-          {/* Pass the handleSelectChange and updatePreferredOcean functions to PopupStatus */}
           <PopupStatus
             handleSelectChange={handleSelectChange}
             updatePreferredOcean={updatePreferredOcean}
@@ -148,6 +153,7 @@ function StatusTab({ selectedTerminal }) {
 
 StatusTab.propTypes = {
   selectedTerminal: PropTypes.number,
+  activeTab: PropTypes.string,
 };
 
 export default StatusTab;

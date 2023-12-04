@@ -1,3 +1,4 @@
+// TabsOps.jsx
 import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import StatusTab from "./StatusTab/StatusTab";
@@ -13,13 +14,12 @@ function TabsOps() {
   const [signalValue, setSignalValue] = useState(null);
   const [selectedTerminal, setSelectedTerminal] = useState(1);
   const [isInitialRender, setIsInitialRender] = useState(true);
+  const [activeTab, setActiveTab] = useState("Infotab"); // Add activeTab state
 
   useEffect(() => {
     const fetchData = () => {
       try {
         if (!isInitialRender && selectedTerminal !== null) {
-          // setLoading(true); // Assuming you have setLoading in your code, uncomment this line if needed
-
           const xhr = new XMLHttpRequest();
           xhr.open(
             "GET",
@@ -37,13 +37,11 @@ function TabsOps() {
               } else {
                 console.error(`Network response was not ok: ${xhr.status}`);
               }
-              // setLoading(false); // Assuming you have setLoading in your code, uncomment this line if needed
             }
           };
 
           xhr.onerror = function () {
             console.error("There was an error with the XHR request");
-            // setLoading(false); // Assuming you have setLoading in your code, uncomment this line if needed
           };
 
           xhr.send();
@@ -55,39 +53,49 @@ function TabsOps() {
       }
     };
 
-    fetchData(); // Initial fetch
+    fetchData();
 
     const intervalId = setInterval(() => {
-      fetchData(); // Fetch data every 10 minutes
+      fetchData();
     }, 10 * 60 * 1000);
 
-    return () => clearInterval(intervalId); // Clear the interval on component unmount
+    return () => clearInterval(intervalId);
   }, [selectedTerminal, isInitialRender]);
 
   const handleTerminalSelect = (terminalId) => {
     setSelectedTerminal(terminalId);
+    setActiveTab("Infotab"); // Switch to the "Info" tab when the terminal is selected
   };
+
   return (
     <div>
       <Tabs
         className="tabs"
+        activeKey={activeTab}
         tabBarExtraContent={
           <TerminalLoc onSelectTerminal={handleTerminalSelect} />
         }
+        onChange={(key) => setActiveTab(key)}
       >
         <TabPane key="Infotab" tab="Info" className="Infotab">
           <div>
-            <InfoTab selectedTerminal={selectedTerminal} />
+            <InfoTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+            />
           </div>
         </TabPane>
         <TabPane key="Statustab" tab="Status">
           <div>
-            <StatusTab selectedTerminal={selectedTerminal} />
+            <StatusTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+            />
           </div>
         </TabPane>
         <TabPane key="EGCtab" tab="EGC">
           <div>
-            <EgcTab selectedTerminal={selectedTerminal}/>
+            <EgcTab selectedTerminal={selectedTerminal} activeTab={activeTab} />
           </div>
         </TabPane>
         <TabPane key="Directorytab" tab="Directory">
@@ -112,7 +120,7 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Signaltab" tab={`Signal: ${signalValue}`}>
           <div>
-            <SignalTab selectedTerminal={selectedTerminal} />
+          <SignalTab selectedTerminal={selectedTerminal} activeTab={activeTab} />
           </div>
         </TabPane>
       </Tabs>

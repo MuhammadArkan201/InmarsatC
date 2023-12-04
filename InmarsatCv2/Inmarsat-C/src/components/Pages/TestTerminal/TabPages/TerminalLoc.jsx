@@ -1,3 +1,4 @@
+// TerminalLoc.jsx
 import React, { useState, useEffect } from "react";
 import { Select } from "antd";
 import PropTypes from "prop-types";
@@ -39,7 +40,7 @@ const TerminalLoc = ({ onSelectTerminal }) => {
         });
       };
 
-      return()=>fetchTerminalData().catch((error) => {
+      return () => fetchTerminalData().catch((error) => {
         console.error("Error fetching terminal data:", error);
       });
     }

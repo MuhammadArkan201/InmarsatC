@@ -1,5 +1,3 @@
-// SignalLevel.jsx
-
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import {
@@ -24,46 +22,46 @@ ChartJS.register(
   Legend
 );
 
-function SignalLevel({ selectedRange, selectedTerminal }) {
+function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isInitialRender, setIsInitialRender] = useState(true);
 
-  const fetchJsonData = () => {
-    if (selectedTerminal === null) {
-      setErrorMessage("Please select a terminal site");
-      return Promise.resolve(null);
-    }
-
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open(
-        "GET",
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}`,
-        true
-      );
-
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            resolve(data);
-          } else {
-            reject(new Error(`Network response was not ok: ${xhr.status}`));
-          }
-        }
-      };
-
-      xhr.onerror = function () {
-        reject(new Error("There was an error with the XHR request"));
-      };
-
-      xhr.send();
-    });
-  };
-
   useEffect(() => {
+    const fetchJsonData = () => {
+      if (activeTab !== "Signaltab" || selectedTerminal === null) {
+        setErrorMessage("Please select a terminal site");
+        return Promise.resolve(null);
+      }
+
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+          "GET",
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}`,
+          true
+        );
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+              resolve(data);
+            } else {
+              reject(new Error(`Network response was not ok: ${xhr.status}`));
+            }
+          }
+        };
+
+        xhr.onerror = function () {
+          reject(new Error("There was an error with the XHR request"));
+        };
+
+        xhr.send();
+      });
+    };
+
     const fetchData = async () => {
       if (!isInitialRender && selectedTerminal !== null) {
         setLoading(true);
@@ -82,7 +80,7 @@ function SignalLevel({ selectedRange, selectedTerminal }) {
     };
 
     fetchData();
-  }, [selectedRange, selectedTerminal, isInitialRender]);
+  }, [selectedRange, selectedTerminal, isInitialRender, activeTab]);
 
   if (
     selectedRange &&
@@ -165,7 +163,7 @@ function SignalLevel({ selectedRange, selectedTerminal }) {
 
       return (
         <div className="chart-container">
-          <div className="containerBody" style={{containerWidth}}>
+          <div className="containerBody" style={{ containerWidth }}>
             <Bar data={data} options={options} />
           </div>
         </div>
@@ -179,6 +177,7 @@ function SignalLevel({ selectedRange, selectedTerminal }) {
 SignalLevel.propTypes = {
   selectedRange: PropTypes.array,
   selectedTerminal: PropTypes.number,
+  activeTab: PropTypes.string,
 };
 
 export default SignalLevel;

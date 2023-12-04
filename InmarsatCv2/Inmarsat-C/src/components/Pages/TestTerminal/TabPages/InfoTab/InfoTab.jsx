@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+// InfoTab.jsx
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import UTTerminalImage from "../../../../Img/UT-terminalBatam.jpeg";
 
-function InfoTab({ selectedTerminal }) {
+function InfoTab({ selectedTerminal, activeTab }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -10,8 +11,7 @@ function InfoTab({ selectedTerminal }) {
 
   useEffect(() => {
     const fetchJsonData = () => {
-      if (selectedTerminal === null) {
-        setErrorMessage("Please select a terminal site");
+      if (activeTab !== "Infotab" || selectedTerminal === null) {
         return Promise.resolve(null);
       }
 
@@ -62,7 +62,7 @@ function InfoTab({ selectedTerminal }) {
     }
 
     setIsInitialRender(false);
-  }, [selectedTerminal, isInitialRender]);
+  }, [selectedTerminal, isInitialRender, activeTab]);
 
   return (
     <div className="contents">
@@ -108,6 +108,7 @@ function InfoTab({ selectedTerminal }) {
 
 InfoTab.propTypes = {
   selectedTerminal: PropTypes.number,
+  activeTab: PropTypes.string,
 };
 
 export default InfoTab;
