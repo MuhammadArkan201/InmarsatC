@@ -9,44 +9,63 @@ function StatusTab({ selectedTerminal, activeTab }) {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [preferredOcean, setPreferredOcean] = useState("");
-  const [isInitialRender, setIsInitialRender] = useState(true); 
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
     const fetchJsonData = async () => {
-      try {
         // Check if the current tab is active before making the API call
         if (activeTab !== "Statustab" || selectedTerminal === null) {
-          return;
+          setErrorMessage("Please select a terminal site");
+          return Promise.resolve(null);
         }
 
         setLoading(true);
 
-        const response = await fetch(
-          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open(
+            "GET",
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`,
+          true
         );
 
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
-        }
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+              resolve(data);
+            } else {
+              reject(new Error(`Network response was not ok: ${xhr.status}`));
+            }
+          }
+        };
 
-        const postData = await response.json();
-        setJsonData(postData);
-        console.log(postData); // Log the data to the console
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setErrorMessage("Error fetching data");
-      } finally {
-        setLoading(false);
-      }
+        xhr.onerror = function () {
+          reject(new Error("There was an error with the XHR request"));
+        };
+
+        xhr.send();
+      });
     };
 
-    // Only fetch data if the current tab is active and it's not the initial render
-    if (!isInitialRender) {
-      fetchJsonData();
-    }
+    const fetchData = async () => {
+      if (!isInitialRender && selectedTerminal !== null) {
+        setLoading(true);
 
-    // Update isInitialRender after the first render
-    setIsInitialRender(false);
+        try {
+          const postData = await fetchJsonData();
+          setJsonData(postData);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      setIsInitialRender(false);
+    };
+
+    fetchData();
   }, [selectedTerminal, isInitialRender, activeTab]);
 
   const getUTCDate = (epochTimestamp) => {
@@ -69,7 +88,11 @@ function StatusTab({ selectedTerminal, activeTab }) {
     setPreferredOcean(value);
   };
 
-  const updatePreferredOcean = async ({ selectedOption, firstResponseData, secondResponseData }) => {
+  const updatePreferredOcean = async ({
+    selectedOption,
+    firstResponseData,
+    secondResponseData,
+  }) => {
     // Update the preferredOcean in the JSON data
     const updatedJsonData = jsonData.map((item) => {
       if (item.dest === selectedTerminal) {
