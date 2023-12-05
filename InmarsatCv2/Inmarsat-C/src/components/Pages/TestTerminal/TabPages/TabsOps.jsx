@@ -57,7 +57,7 @@ function TabsOps() {
 
     const intervalId = setInterval(() => {
       fetchData();
-    }, 10 * 60 * 1000);
+    }, 60 * 60 * 1000);
 
     return () => clearInterval(intervalId);
   }, [selectedTerminal, isInitialRender]);

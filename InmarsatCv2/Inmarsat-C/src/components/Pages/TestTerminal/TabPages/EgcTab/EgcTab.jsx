@@ -18,8 +18,11 @@ function EgcTab({ selectedTerminal, activeTab }) {
       try {
         // Only fetch data if the tab is active
         if (activeTab === "EGCtab") {
+          const startDate = rangePickerValue[0]? Math.floor(Date.parse(rangePickerValue[0]) / 1000) : ''; // Convert start date to epoch format
+          const endDate = rangePickerValue[1] ? Math.floor(Date.parse(rangePickerValue[1]) / 1000) : ''; // Convert end date to epoch format
+
           const response = await fetch(
-            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}`
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`
           );
 
           if (!response.ok) {

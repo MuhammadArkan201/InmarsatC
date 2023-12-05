@@ -34,15 +34,18 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
         setErrorMessage("Please select a terminal site");
         return Promise.resolve(null);
       }
-
+    
       return new Promise((resolve, reject) => {
+        const startDate = selectedRange[0] ? Math.floor(selectedRange[0].unix()) : '';
+        const endDate = selectedRange[1] ? Math.floor(selectedRange[1].unix()) : '';
+    
         const xhr = new XMLHttpRequest();
         xhr.open(
           "GET",
-          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}`,
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`,
           true
         );
-
+    
         xhr.onreadystatechange = function () {
           if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -53,14 +56,15 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
             }
           }
         };
-
+    
         xhr.onerror = function () {
           reject(new Error("There was an error with the XHR request"));
         };
-
+    
         xhr.send();
       });
     };
+    
 
     const fetchData = async () => {
       if (!isInitialRender && selectedTerminal !== null) {
