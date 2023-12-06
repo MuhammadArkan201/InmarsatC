@@ -13,18 +13,18 @@ function StatusTab({ selectedTerminal, activeTab }) {
 
   useEffect(() => {
     const fetchJsonData = async () => {
-        // Check if the current tab is active before making the API call
-        if (activeTab !== "Statustab" || selectedTerminal === null) {
-          setErrorMessage("Please select a terminal site");
-          return Promise.resolve(null);
-        }
+      // Check if the current tab is active before making the API call
+      if (activeTab !== "Statustab" || selectedTerminal === null) {
+        setErrorMessage("Please select a terminal site");
+        return Promise.resolve(null);
+      }
 
-        setLoading(true);
+      setLoading(true);
 
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open(
-            "GET",
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+          "GET",
           `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`,
           true
         );
@@ -84,8 +84,8 @@ function StatusTab({ selectedTerminal, activeTab }) {
     ));
   };
 
-  const handleSelectChange = (value) => {
-    setPreferredOcean(value);
+  const handleSelectChange = (value, label) => {
+    setPreferredOcean(label);
   };
 
   const updatePreferredOcean = async ({
@@ -108,7 +108,6 @@ function StatusTab({ selectedTerminal, activeTab }) {
     });
 
     // Implement the logic to update the API with the updated JSON data
-    // This is a placeholder, you may need to replace it with your API endpoint and method
     try {
       const response = await fetch(
         `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status/${selectedTerminal}`,

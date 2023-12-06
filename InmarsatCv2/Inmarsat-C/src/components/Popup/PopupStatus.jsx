@@ -1,3 +1,4 @@
+// PopupStatus.jsx
 import React, { useState } from "react";
 import { Button, Modal, Select } from "antd";
 import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
@@ -21,9 +22,9 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
     setIsModalOpen(false);
   };
 
-  const onChange = (value) => {
-    setSelectedOption(value);
-    handleSelectChange(value);
+  const onChange = (value, option) => {
+    setSelectedOption(option.label);
+    handleSelectChange(value, option.label);
   };
 
   const onApply = async () => {
@@ -76,7 +77,7 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
       </Button>
       <Modal
         className="stspopup"
-        open={isModalOpen}
+        visible={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         closable={false}
