@@ -1,4 +1,3 @@
-// egctab.jsx
 import React, { useState, useEffect } from "react";
 import "../../../../../App.css";
 import Popup from "../../../../Popup/Popup";
@@ -11,18 +10,37 @@ function EgcTab({ selectedTerminal, activeTab }) {
   const [rangePickerValue, setRangePickerValue] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async (start, end) => {
+    try {
+      if (activeTab === "EGCtab") {
+        const response = await fetch(
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${start}&end=${end}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Data received in EgcTab:", data);
+
+        setTableData(data);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
 
-    const fetchData = async () => {
+    const fetchData = async (start, end) => {
       try {
-        // Only fetch data if the tab is active
         if (activeTab === "EGCtab") {
-          const startDate = rangePickerValue[0]? Math.floor(Date.parse(rangePickerValue[0]) / 1000) : ''; // Convert start date to epoch format
-          const endDate = rangePickerValue[1] ? Math.floor(Date.parse(rangePickerValue[1]) / 1000) : ''; // Convert end date to epoch format
-
           const response = await fetch(
-            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${start}&end=${end}`
           );
 
           if (!response.ok) {
@@ -46,17 +64,39 @@ function EgcTab({ selectedTerminal, activeTab }) {
     if (
       showTable &&
       isMounted &&
-      selectedTerminal !== tableData.selectedTerminal
+      selectedTerminal !== tableData.selectedTerminal &&
+      activeTab === "EGCtab"
     ) {
-      // Clear existing tableData when the terminal changes
       setTableData([]);
-      fetchData();
+      fetchData;
     }
 
     return () => {
       isMounted = false;
     };
-  }, [showTable, selectedTerminal, activeTab]); // Include selectedTerminal and activeTab as dependencies
+  }, [showTable, selectedTerminal, activeTab, rangePickerValue]);
+
+  const handleRangePickerChange = (value) => {
+    setRangePickerValue(value);
+  };
+
+  const handleDataFetch = async (dateValue) => {
+    const startDate = dateValue[0] ? Math.floor(dateValue[0].unix()) : "";
+    const endDate = dateValue[1] ? Math.floor(dateValue[1].unix()) : "";
+
+    console.log("Start Date (Epoch):", startDate);
+    console.log("End Date (Epoch):", endDate);
+
+    await fetchData(startDate, endDate);
+  };
+
+  const handlePopupSubmit = async () => {
+    if (rangePickerValue.length === 2) {
+      setShowTable(true);
+    } else {
+      console.error("Invalid rangePickerValue:", rangePickerValue);
+    }
+  };
 
   return (
     <div className="contents">
@@ -64,7 +104,9 @@ function EgcTab({ selectedTerminal, activeTab }) {
         <div className="head-content">EGC Messages</div>
         <Popup
           onShowTable={() => setShowTable(true)}
-          onRangePickerChange={(value) => setRangePickerValue(value)}
+          onRangePickerChange={handleRangePickerChange}
+          onDataFetch={handleDataFetch}
+          onSubmit={handlePopupSubmit}
         />
       </div>
       <div className="content">

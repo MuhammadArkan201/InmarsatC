@@ -6,7 +6,7 @@
 
   const { RangePicker } = DatePicker;
 
-  const Popup = ({ onShowTable, onRangePickerChange }) => {
+  const Popup = ({ onShowTable, onRangePickerChange, onDataFetch }) => {
     const [open, setOpen] = useState(false);
     const [dateValue, setDateValue] = useState(null);
     const [radioValue, setRadioValue] = useState(1);
@@ -41,6 +41,8 @@
       if (dateValue) {
         onShowTable();
         onRangePickerChange(dateValue);
+              // Trigger the callback function to fetch data
+      onDataFetch(dateValue);
       }
     };
 
@@ -175,6 +177,7 @@
   Popup.propTypes = {
     onShowTable: PropTypes.func.isRequired,
     onRangePickerChange: PropTypes.func.isRequired,
+    onDataFetch: PropTypes.func.isRequired,
   };
-
+  
   export default Popup;
