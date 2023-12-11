@@ -9,48 +9,85 @@ function StatusTab({ selectedTerminal, activeTab }) {
   const [preferredOcean, setPreferredOcean] = useState("");
   const [isInitialRender, setIsInitialRender] = useState(true);
 
+  const fetchJsonDataXHR = () => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const url = `datas/statusData/statustabbatamData.json`;
+
+      xhr.open("GET", url, true);
+
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const data = JSON.parse(xhr.responseText);
+          resolve(data);
+        } else {
+          reject(new Error(`XHR request failed with status ${xhr.status}`));
+        }
+      };
+
+      xhr.onerror = function () {
+        reject(new Error("XHR request failed"));
+      };
+
+      xhr.send();
+    });
+  };
+
   useEffect(() => {
-    const fetchJsonData = async () => {
+    const fetchData = () => {
       if (activeTab !== "Statustab" || selectedTerminal === null) {
-        setErrorMessage("Please select a terminal site");
         return Promise.resolve(null);
       }
 
       setLoading(true);
 
-      try {
-        const response = await fetch(
-          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`
-        );
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        "GET",
+        `datas/statusData/statustabbatamData.json`,
+        true
+      );
 
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
-        }
+      return new Promise((resolve, reject) => {
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              const response = JSON.parse(xhr.responseText);
+              resolve(response);
+            } else {
+              reject(
+                new Error(
+                  `Network response was not ok: ${xhr.status}`
+                )
+              );
+            }
+          }
+        };
 
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        throw error;
-      } finally {
-        setLoading(false);
-      }
+        xhr.onerror = function () {
+          reject(new Error("XHR request failed"));
+        };
+
+        xhr.send();
+      });
     };
 
-    const fetchData = async () => {
-      if (!isInitialRender && selectedTerminal !== null) {
-        try {
-          const postData = await fetchJsonData();
+    if (!isInitialRender && selectedTerminal !== null) {
+      setLoading(true);
+
+      fetchData()
+        .then((postData) => {
           setJsonData(postData);
-        } catch (error) {
+        })
+        .catch((error) => {
           console.error("Error fetching data:", error);
-        }
-      }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
 
-      setIsInitialRender(false);
-    };
-
-    fetchData();
+    setIsInitialRender(false);
   }, [selectedTerminal, isInitialRender, activeTab]);
 
   const getUTCDate = (epochTimestamp) => {
@@ -79,12 +116,12 @@ function StatusTab({ selectedTerminal, activeTab }) {
     secondResponseData,
   }) => {
     const itemToUpdate = jsonData.find((item) => item.dest === selectedTerminal);
-  
+
     if (!itemToUpdate) {
       console.error("Item not found for update");
       return;
     }
-  
+
     const updatedItem = {
       ...itemToUpdate,
       data: {
@@ -92,22 +129,21 @@ function StatusTab({ selectedTerminal, activeTab }) {
         preferredOcean: selectedOption,
       },
     };
-  
+
     try {
       const response = await fetch(
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`,
+        `datas/statusData/statustabbatamData.json`,
         {
           method: "POST", // Use POST for updates
-          headers: {
-          },
+          headers: {},
           body: JSON.stringify(updatedItem),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
-  
+
       console.log("Preferred Ocean Updated Successfully");
       setJsonData((prevData) =>
         prevData.map((item) =>
@@ -119,7 +155,7 @@ function StatusTab({ selectedTerminal, activeTab }) {
       console.error("Error updating preferred ocean:", error);
     }
   };
-  
+
   return (
     <div className="contents">
       <div className="content">

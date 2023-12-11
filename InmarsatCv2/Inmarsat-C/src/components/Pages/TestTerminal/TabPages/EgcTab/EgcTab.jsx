@@ -10,27 +10,29 @@ function EgcTab({ selectedTerminal, activeTab }) {
   const [rangePickerValue, setRangePickerValue] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async (start, end) => {
-    try {
-      if (activeTab === "EGCtab") {
-        const response = await fetch(
-          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${start}&end=${end}`
-        );
+  const fetchDataXHR = (start, end) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${start}&end=${end}`;
 
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.status}`);
+      xhr.open("GET", url, true);
+
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const data = JSON.parse(xhr.responseText);
+          console.log("Data received in EgcTab:", data);
+          resolve(data);
+        } else {
+          reject(new Error(`XHR request failed with status ${xhr.status}`));
         }
+      };
 
-        const data = await response.json();
-        console.log("Data received in EgcTab:", data);
+      xhr.onerror = function () {
+        reject(new Error("XHR request failed"));
+      };
 
-        setTableData(data);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-      setLoading(false);
-    }
+      xhr.send();
+    });
   };
 
   useEffect(() => {
@@ -39,16 +41,7 @@ function EgcTab({ selectedTerminal, activeTab }) {
     const fetchData = async (start, end) => {
       try {
         if (activeTab === "EGCtab") {
-          const response = await fetch(
-            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${start}&end=${end}`
-          );
-
-          if (!response.ok) {
-            throw new Error(`Network response was not ok: ${response.status}`);
-          }
-
-          const data = await response.json();
-          console.log("Data received in EgcTab:", data);
+          const data = await fetchDataXHR(start, end);
 
           if (isMounted) {
             setTableData(data);
@@ -68,7 +61,7 @@ function EgcTab({ selectedTerminal, activeTab }) {
       activeTab === "EGCtab"
     ) {
       setTableData([]);
-      fetchData;
+      fetchData();
     }
 
     return () => {

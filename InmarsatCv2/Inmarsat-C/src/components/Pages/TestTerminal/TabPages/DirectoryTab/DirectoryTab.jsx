@@ -9,27 +9,29 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
   const [rangePickerValue, setRangePickerValue] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async (start, end) => {
-    try {
-      // Fetch data from the mock API
-      const response = await fetch(
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}&start=${start}&end=${end}`
-      );
+  const fetchDataXHR = (start, end) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}&start=${start}&end=${end}`;
 
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
-      }
+      xhr.open("GET", url, true);
 
-      const data = await response.json();
-      console.log("Data received in DirectoryTab:", data);
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const data = JSON.parse(xhr.responseText);
+          console.log("Data received in DirectoryTab:", data);
+          resolve(data);
+        } else {
+          reject(new Error(`XHR request failed with status ${xhr.status}`));
+        }
+      };
 
-      // Update state with fetched data
-      setTableData(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-      setLoading(false);
-    }
+      xhr.onerror = function () {
+        reject(new Error("XHR request failed"));
+      };
+
+      xhr.send();
+    });
   };
 
   useEffect(() => {
@@ -37,9 +39,13 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
 
     const fetchData = async () => {
       try {
-        // Fetch data only if the component is still mounted
         if (isMounted && activeTab === "Directorytab") {
-          await fetchData();
+          const data = await fetchDataXHR();
+
+          if (isMounted) {
+            setTableData(data);
+            setLoading(false);
+          }
         }
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -47,13 +53,16 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
       }
     };
 
-    // Fetch data when conditions are met
-    if (showTable && isMounted && selectedTerminal !== tableData.selectedTerminal && activeTab === "Directorytab") {
+    if (
+      showTable &&
+      isMounted &&
+      selectedTerminal !== tableData.selectedTerminal &&
+      activeTab === "Directorytab"
+    ) {
       setTableData([]);
       fetchData();
     }
 
-    // Cleanup: set isMounted to false when the component unmounts
     return () => {
       isMounted = false;
     };
