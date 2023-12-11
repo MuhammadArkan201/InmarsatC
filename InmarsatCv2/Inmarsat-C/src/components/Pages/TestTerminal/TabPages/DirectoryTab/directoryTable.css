@@ -1,0 +1,54 @@
+.ant-table-cell {
+  border-radius: 0 !important;
+  text-align: center !important;
+  padding: 8px; /* Adjust padding to your preference */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  overflow: hidden; /* Hide content that exceeds the cell width */
+
+}
+
+.content-pre-content {
+  white-space: normal;
+  text-align: justify;
+  margin: 0;
+}
+
+.pre-wrapper {
+  display: flex;
+  align-items: flex-start !important;
+}
+
+.content-pre {
+  white-space: normal;
+  vertical-align: top !important;
+  margin: 0;
+}
+
+.ant-table-cell-content {
+  white-space: normal; /* Allow text to wrap within the "Content" column */
+}
+
+.even-row {
+  background-color: rgba(85, 85, 85, 0.15);
+  border-radius: 0 !important;
+}
+
+@media screen and (max-width: 768px) {
+  .titletbl {
+    text-align: left;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+}
+
+.ant-table-expanded-row-fixed {
+  width: 100% !important; /* or overflow: auto; */
+}
+
+.ant-picker-panel-container-custom {
+  max-height: 80vh;
+  overflow-y: auto;
+}

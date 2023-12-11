@@ -89,7 +89,7 @@ const EgcTable = ({ rangePickerValue, tableData, selectedTerminal }) => {
   const handleDataClick = (record) => {
     const xhr = new XMLHttpRequest();
     
-    xhr.open("GET", "https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=1", true);
+    xhr.open("GET", `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     xhr.onload = function () {
@@ -174,8 +174,6 @@ const EgcTable = ({ rangePickerValue, tableData, selectedTerminal }) => {
     <div>No data available</div>
   );
   
-  
-
   const totalRecords =
     apiResponseData.count ||
     (apiResponseData.data ? apiResponseData.data.length : 0);

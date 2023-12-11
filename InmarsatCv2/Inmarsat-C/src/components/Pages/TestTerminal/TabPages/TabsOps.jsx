@@ -100,7 +100,7 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Directorytab" tab="Directory">
           <div>
-            <DirectoryTab />
+            <DirectoryTab selectedTerminal={selectedTerminal} activeTab={activeTab}/>
           </div>
         </TabPane>
         <TabPane key="Tx Historytab" tab="Tx History">

@@ -99,7 +99,6 @@ function StatusTab({ selectedTerminal, activeTab }) {
         {
           method: "POST", // Use POST for updates
           headers: {
-            "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedItem),
         }
