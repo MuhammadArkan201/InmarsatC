@@ -37,54 +37,72 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchData = async () => {
-      try {
-        if (isMounted && activeTab === "Directorytab") {
-          const data = await fetchDataXHR();
+    const fetchJsonData = async () => {
+      if (activeTab !== "Directorytab" || selectedTerminal === null) {
+        return Promise.resolve(null);
+      }
 
-          if (isMounted) {
-            setTableData(data);
-            setLoading(false);
+      return new Promise(async (resolve, reject) => {
+        const startDate = rangePickerValue[0] ? Math.floor(rangePickerValue[0].unix()) : '';
+        const endDate = rangePickerValue[1] ? Math.floor(rangePickerValue[1].unix()) : '';
+
+        const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`;
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`XHR request failed with status ${response.status}`);
           }
+
+          const data = await response.json();
+          resolve(data);
+        } catch (error) {
+          reject(error);
         }
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setLoading(false);
+      });
+    };
+
+    const fetchData = async () => {
+      if (showTable && activeTab === "Directorytab") {
+        setTableData([]);
+        setLoading(true);
+
+        try {
+          const postData = await fetchJsonData();
+          setTableData(postData);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
-    if (
-      showTable &&
-      isMounted &&
-      selectedTerminal !== tableData.selectedTerminal &&
-      activeTab === "Directorytab"
-    ) {
-      setTableData([]);
+    if (isMounted && showTable && activeTab === "Directorytab") {
       fetchData();
     }
 
     return () => {
       isMounted = false;
     };
-  }, [showTable, selectedTerminal, activeTab, rangePickerValue]);
+  }, [showTable, activeTab, rangePickerValue, selectedTerminal]);
 
   const handleRangePickerChange = (value) => {
     setRangePickerValue(value);
   };
 
-  const handleDataFetch = async (dateValue) => {
-    const startDate = dateValue[0] ? Math.floor(dateValue[0].unix()) : "";
-    const endDate = dateValue[1] ? Math.floor(dateValue[1].unix()) : "";
-
-    console.log("Start Date (Epoch):", startDate);
-    console.log("End Date (Epoch):", endDate);
-
-    await fetchData(startDate, endDate);
+  const handleDataFetch = async () => {
+    try {
+      await fetchDataXHR();
+      setShowTable(true);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
   };
 
   const handlePopupSubmit = async () => {
     if (rangePickerValue.length === 2) {
-      setShowTable(true);
+      await handleDataFetch();
     } else {
       console.error("Invalid rangePickerValue:", rangePickerValue);
     }
@@ -94,11 +112,9 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
     <div className="contents">
       <div className="content">
         <div className="head-content">Device Directory</div>
-        {/* Render Popup component with event handlers */}
         <Popup
           onShowTable={() => setShowTable(true)}
           onRangePickerChange={handleRangePickerChange}
-          onDataFetch={handleDataFetch}
           onSubmit={handlePopupSubmit}
         />
       </div>
@@ -107,7 +123,6 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
         {loading ? (
           <p>Please select the date</p>
         ) : (
-          // Render DirectoryTable component with data
           showTable &&
           tableData?.length > 0 && (
             <DirectoryTable

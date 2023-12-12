@@ -38,54 +38,82 @@ function EgcTab({ selectedTerminal, activeTab }) {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchData = async (start, end) => {
-      try {
-        if (activeTab === "EGCtab") {
-          const data = await fetchDataXHR(start, end);
+    const fetchJsonData = async () => {
+      if (activeTab !== "EGCtab" || selectedTerminal === null) {
+        return Promise.resolve(null);
+      }
 
-          if (isMounted) {
-            setTableData(data);
-            setLoading(false);
+      return new Promise(async (resolve, reject) => {
+        const startDate = rangePickerValue[0] ? Math.floor(rangePickerValue[0].valueOf() / 1000) : '';
+        const endDate = rangePickerValue[1] ? Math.floor(rangePickerValue[1].valueOf() / 1000) : '';
+
+        const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`;
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`XHR request failed with status ${response.status}`);
           }
+
+          const data = await response.json();
+          resolve(data);
+        } catch (error) {
+          reject(error);
         }
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setLoading(false);
+      });
+    };
+
+    const fetchData = async () => {
+      if (showTable && activeTab === "EGCtab") {
+        setTableData([]);
+        setLoading(true);
+
+        try {
+          const postData = await fetchJsonData();
+          setTableData(postData);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
-    if (
-      showTable &&
-      isMounted &&
-      selectedTerminal !== tableData.selectedTerminal &&
-      activeTab === "EGCtab"
-    ) {
-      setTableData([]);
+    if (isMounted && showTable && activeTab === "EGCtab") {
       fetchData();
     }
 
     return () => {
       isMounted = false;
     };
-  }, [showTable, selectedTerminal, activeTab, rangePickerValue]);
+  }, [showTable, activeTab, rangePickerValue, selectedTerminal]);
 
   const handleRangePickerChange = (value) => {
     setRangePickerValue(value);
   };
 
   const handleDataFetch = async (dateValue) => {
-    const startDate = dateValue[0] ? Math.floor(dateValue[0].unix()) : "";
-    const endDate = dateValue[1] ? Math.floor(dateValue[1].unix()) : "";
+    const startDate = dateValue[0] ? dateValue[0].valueOf() : 0;
+    const endDate = dateValue[1] ? dateValue[1].valueOf() : 0;
 
+    console.log("Start Date (Type):", typeof dateValue[0], "Value:", dateValue[0]);
+    console.log("End Date (Type):", typeof dateValue[1], "Value:", dateValue[1]);
     console.log("Start Date (Epoch):", startDate);
     console.log("End Date (Epoch):", endDate);
 
-    await fetchData(startDate, endDate);
+    try {
+      const data = await fetchDataXHR(startDate, endDate);
+      setTableData(data);
+      setLoading(false);
+      setShowTable(true);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
   };
 
   const handlePopupSubmit = async () => {
     if (rangePickerValue.length === 2) {
-      setShowTable(true);
+      await handleDataFetch(rangePickerValue);
     } else {
       console.error("Invalid rangePickerValue:", rangePickerValue);
     }
@@ -98,7 +126,6 @@ function EgcTab({ selectedTerminal, activeTab }) {
         <Popup
           onShowTable={() => setShowTable(true)}
           onRangePickerChange={handleRangePickerChange}
-          onDataFetch={handleDataFetch}
           onSubmit={handlePopupSubmit}
         />
       </div>
