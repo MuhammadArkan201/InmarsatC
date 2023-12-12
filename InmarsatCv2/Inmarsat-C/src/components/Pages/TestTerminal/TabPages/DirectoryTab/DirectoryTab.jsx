@@ -46,15 +46,8 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
         const startDate = rangePickerValue[0] ? Math.floor(rangePickerValue[0].unix()) : '';
         const endDate = rangePickerValue[1] ? Math.floor(rangePickerValue[1].unix()) : '';
 
-        const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`;
-
         try {
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`XHR request failed with status ${response.status}`);
-          }
-
-          const data = await response.json();
+          const data = await fetchDataXHR(startDate, endDate);
           resolve(data);
         } catch (error) {
           reject(error);

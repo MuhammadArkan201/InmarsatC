@@ -47,15 +47,8 @@ function EgcTab({ selectedTerminal, activeTab }) {
         const startDate = rangePickerValue[0] ? Math.floor(rangePickerValue[0].valueOf() / 1000) : '';
         const endDate = rangePickerValue[1] ? Math.floor(rangePickerValue[1].valueOf() / 1000) : '';
 
-        const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/egc?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`;
-
         try {
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`XHR request failed with status ${response.status}`);
-          }
-
-          const data = await response.json();
+          const data = await fetchDataXHR(startDate, endDate);
           resolve(data);
         } catch (error) {
           reject(error);
