@@ -24,10 +24,6 @@
   margin: 0;
 }
 
-.content-pre-content {
-  text-align: left !important;
-}
-
 .ant-table-cell-content {
   white-space: normal; /* Allow text to wrap within the "Content" column */
 }

@@ -7,6 +7,7 @@ import EgcTab from "./EgcTab/EgcTab";
 import DirectoryTab from "./DirectoryTab/DirectoryTab";
 import InfoTab from "./InfoTab/InfoTab";
 import TerminalLoc from "./TerminalLoc";
+import TxhistoryTab from "./TxhistoryTab/TxhistoryTab";
 
 const { TabPane } = Tabs;
 
@@ -100,11 +101,19 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Directorytab" tab="Directory">
           <div>
-            <DirectoryTab selectedTerminal={selectedTerminal} activeTab={activeTab}/>
+            <DirectoryTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+            />
           </div>
         </TabPane>
-        <TabPane key="Tx Historytab" tab="Tx History">
-          <div>tab content Tx History tab</div>
+        <TabPane key="Txhistorytab" tab="Tx History">
+          <div>
+          <TxhistoryTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+            />
+          </div>
         </TabPane>
         <TabPane key="Emailtab" tab="Email">
           <div>tab content Email tab</div>
@@ -120,7 +129,10 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Signaltab" tab={`Signal: ${signalValue}`}>
           <div>
-          <SignalTab selectedTerminal={selectedTerminal} activeTab={activeTab} />
+            <SignalTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+            />
           </div>
         </TabPane>
       </Tabs>

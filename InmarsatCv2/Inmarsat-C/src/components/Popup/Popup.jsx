@@ -177,7 +177,8 @@
   Popup.propTypes = {
     onShowTable: PropTypes.func.isRequired,
     onRangePickerChange: PropTypes.func.isRequired,
-    onDataFetch: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onDataFetch: PropTypes.func.isRequired, // Remove this line if not needed
   };
   
   export default Popup;

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Popup from "../../../../Popup/Popup";
-import DirectoryTable from "./DirectoryTable";
+import TxhistoryTable from "./TxhistoryTable";
 import PropTypes from "prop-types";
 
-function DirectoryTab({ selectedTerminal, activeTab }) {
+function TxhistoryTab({ selectedTerminal, activeTab }) {
   const [showTable, setShowTable] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [rangePickerValue, setRangePickerValue] = useState([]);
@@ -12,14 +12,14 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
   const fetchDataXHR = (start, end) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}&start=${start}&end=${end}`;
+      const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/txlog?dest=${selectedTerminal}&start=${start}&end=${end}`;
 
       xhr.open("GET", url, true);
 
       xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 300) {
           const data = JSON.parse(xhr.responseText);
-          console.log("Data received in DirectoryTab:", data);
+          console.log("Data received in TxhistoryTab:", data);
           resolve(data);
         } else {
           reject(new Error(`XHR request failed with status ${xhr.status}`));
@@ -38,13 +38,17 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
     let isMounted = true;
 
     const fetchJsonData = async () => {
-      if (activeTab !== "Directorytab" || selectedTerminal === null) {
+      if (activeTab !== "Txhistorytab" || selectedTerminal === null) {
         return Promise.resolve(null);
       }
 
       return new Promise(async (resolve, reject) => {
-        const startDate = rangePickerValue[0] ? Math.floor(rangePickerValue[0].unix()) : '';
-        const endDate = rangePickerValue[1] ? Math.floor(rangePickerValue[1].unix()) : '';
+        const startDate = rangePickerValue[0]
+          ? Math.floor(rangePickerValue[0].unix())
+          : "";
+        const endDate = rangePickerValue[1]
+          ? Math.floor(rangePickerValue[1].unix())
+          : "";
 
         try {
           const data = await fetchDataXHR(startDate, endDate);
@@ -56,7 +60,7 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
     };
 
     const fetchData = async () => {
-      if (showTable && activeTab === "Directorytab") {
+      if (showTable && activeTab === "Txhistorytab") {
         setTableData([]);
         setLoading(true);
 
@@ -71,7 +75,7 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
       }
     };
 
-    if (isMounted && showTable && activeTab === "Directorytab") {
+    if (isMounted && showTable && activeTab === "Txhistorytab") {
       fetchData();
     }
 
@@ -104,12 +108,11 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
   return (
     <div className="contents">
       <div className="content">
-        <div className="head-content">Device Directory</div>
+        <div className="head-content">Device Txhistory</div>
         <Popup
           onShowTable={() => setShowTable(true)}
           onRangePickerChange={handleRangePickerChange}
           onSubmit={handlePopupSubmit}
-          
         />
       </div>
       <div className="content">
@@ -119,7 +122,7 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
         ) : (
           showTable &&
           tableData?.length > 0 && (
-            <DirectoryTable
+            <TxhistoryTable
               rangePickerValue={rangePickerValue}
               tableData={tableData}
               selectedTerminal={selectedTerminal}
@@ -131,9 +134,9 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
   );
 }
 
-DirectoryTab.propTypes = {
+TxhistoryTab.propTypes = {
   selectedTerminal: PropTypes.number.isRequired,
   activeTab: PropTypes.string.isRequired,
 };
 
-export default DirectoryTab;
+export default TxhistoryTab;
