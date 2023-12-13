@@ -8,6 +8,7 @@ import DirectoryTab from "./DirectoryTab/DirectoryTab";
 import InfoTab from "./InfoTab/InfoTab";
 import TerminalLoc from "./TerminalLoc";
 import TxhistoryTab from "./TxhistoryTab/TxhistoryTab";
+import EmailTab from "./EmailTab/EmailTab";
 
 const { TabPane } = Tabs;
 
@@ -116,7 +117,7 @@ function TabsOps() {
           </div>
         </TabPane>
         <TabPane key="Emailtab" tab="Email">
-          <div>tab content Email tab</div>
+          <div><EmailTab/></div>
         </TabPane>
         <TabPane key="Send Datatab" tab="Send Data">
           <div>tab content Send Data tab</div>
