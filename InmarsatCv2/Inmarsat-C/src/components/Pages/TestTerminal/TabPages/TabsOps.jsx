@@ -13,6 +13,7 @@ import EmailTab from "./EmailTab/EmailTab";
 const { TabPane } = Tabs;
 
 function TabsOps() {
+  const [preferredOcean, setPreferredOcean] = useState("Some Ocean");
   const [signalValue, setSignalValue] = useState(null);
   const [selectedTerminal, setSelectedTerminal] = useState(1);
   const [isInitialRender, setIsInitialRender] = useState(true);
@@ -92,6 +93,7 @@ function TabsOps() {
             <StatusTab
               selectedTerminal={selectedTerminal}
               activeTab={activeTab}
+              setPreferredOcean={setPreferredOcean}
             />
           </div>
         </TabPane>
@@ -110,14 +112,20 @@ function TabsOps() {
         </TabPane>
         <TabPane key="Txhistorytab" tab="Tx History">
           <div>
-          <TxhistoryTab
+            <TxhistoryTab
               selectedTerminal={selectedTerminal}
               activeTab={activeTab}
             />
           </div>
         </TabPane>
         <TabPane key="Emailtab" tab="Email">
-          <div><EmailTab/></div>
+          <div>
+            <EmailTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+              preferredOcean={preferredOcean}
+            />
+          </div>
         </TabPane>
         <TabPane key="Send Datatab" tab="Send Data">
           <div>tab content Send Data tab</div>

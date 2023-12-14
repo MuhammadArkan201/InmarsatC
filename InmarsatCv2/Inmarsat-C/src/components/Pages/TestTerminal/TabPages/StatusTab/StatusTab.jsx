@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import PopupStatus from "../../../../Popup/PopupStatus";
 
-function StatusTab({ selectedTerminal, activeTab }) {
+function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [preferredOcean, setPreferredOcean] = useState("");
   const [isInitialRender, setIsInitialRender] = useState(true);
 
   const fetchJsonDataXHR = () => {
@@ -189,6 +187,7 @@ function StatusTab({ selectedTerminal, activeTab }) {
           <PopupStatus
             handleSelectChange={handleSelectChange}
             updatePreferredOcean={updatePreferredOcean}
+            preferredOcean={setPreferredOcean} // Updated to use setPreferredOcean directly
           />
         </div>
       </div>
@@ -199,6 +198,7 @@ function StatusTab({ selectedTerminal, activeTab }) {
 StatusTab.propTypes = {
   selectedTerminal: PropTypes.number,
   activeTab: PropTypes.string,
+  setPreferredOcean: PropTypes.func.isRequired, // Ensure setPreferredOcean is required
 };
 
 export default StatusTab;
