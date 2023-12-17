@@ -9,11 +9,12 @@ import InfoTab from "./InfoTab/InfoTab";
 import TerminalLoc from "./TerminalLoc";
 import TxhistoryTab from "./TxhistoryTab/TxhistoryTab";
 import EmailTab from "./EmailTab/EmailTab";
+import ConfigTab from "./ConfigTab/ConfigTab";
 
 const { TabPane } = Tabs;
 
 function TabsOps() {
-  const [preferredOcean, setPreferredOcean] = useState("Some Ocean");
+  const [preferredOcean, setPreferredOcean] = useState(" ");
   const [signalValue, setSignalValue] = useState(null);
   const [selectedTerminal, setSelectedTerminal] = useState(1);
   const [isInitialRender, setIsInitialRender] = useState(true);
@@ -134,7 +135,11 @@ function TabsOps() {
           <div>tab content Cmd tab</div>
         </TabPane>
         <TabPane key="Configtab" tab="Config">
-          <div>tab content Config tab</div>
+          <div> <ConfigTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+              preferredOcean={preferredOcean}
+            /></div>
         </TabPane>
         <TabPane key="Signaltab" tab={`Signal: ${signalValue}`}>
           <div>

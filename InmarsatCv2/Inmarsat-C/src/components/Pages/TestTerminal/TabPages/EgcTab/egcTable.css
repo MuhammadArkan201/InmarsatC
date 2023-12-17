@@ -1,17 +1,29 @@
+@font-face {
+  font-family: 'Consolas';
+  src: url('./fonts/consolas.woff') format('woff'); /* Adjust the path and format as needed */
+  font-weight: normal;
+  font-style: normal;
+}
+
 .ant-table-container {
   border-radius: 0 !important;
-  border-left: 1px solid black !important;
-  border-top: 1px solid black !important;
+  border-left: 1px solid #DCDCDC !important;
+  border-top: 1px solid #DCDCDC !important;
   overflow: auto; /* Add overflow property to enable horizontal scrolling if needed */
 }
  
 .ant-table-tbody > tr > td {
-  border-bottom: 1px solid black !important;
-  border-right: 1px solid black !important; /* Add border-bottom to both header and body cells */
+  border-bottom: 1px solid #DCDCDC !important;
+  border-right: 1px solid #DCDCDC !important; /* Add border-bottom to both header and body cells */
 }
 
 .ant-table-thead > tr > th {
-  border-right: 1px solid black !important; /* Add border-bottom to the table header cells */
+  border-right: 1px solid #DCDCDC !important; /* Add border-bottom to the table header cells */
+}
+
+.even-row {
+  background-color: #F9F9F9 !important;
+  border-radius: 0 !important;
 }
 
 .ant-table-cell {
@@ -25,7 +37,7 @@
 }
 
 .even-row {
-  background-color: rgba(85, 85, 85, 0.15);
+  background-color: #F9F9F9 !important;
   border-radius: 0 !important;
 }
 
@@ -54,5 +66,16 @@
 .ant-picker-panel-container-custom {
   max-height: 80vh;
   overflow-y: auto;
+}
+
+.ant-modal-body .box {
+  border: 1px solid #CCCCCC !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  background-color: #F5F5F5 !important;
+  max-height: 400px; /* Set your desired max-height */
+  overflow-y: auto;
+  font-size:x-small;
+  height: 300px !important;
 }
 

@@ -1,21 +1,73 @@
-// PopupStatus.jsx
 import React, { useState } from "react";
 import { Button, Modal, Select } from "antd";
-import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
 import PropTypes from "prop-types";
+import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
 
-const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
+const PopupStatus = ({
+  handleSelectChange,
+  updatePreferredOcean,
+  preferredOcean,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState(preferredOcean || "");
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-    // Use the updatePreferredOcean function passed from the parent component
-    updatePreferredOcean({ selectedOption });
+  const handleOk = async () => {
+    try {
+      // First API call
+      const cmdFirstAPI = "set o-" + selectedOption.charAt(0);
+
+      const responseFirstAPI = await fetch(
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=9`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cmd: cmdFirstAPI }),
+        }
+      );
+
+      if (!responseFirstAPI.ok) {
+        throw new Error(`Network response was not ok: ${responseFirstAPI.status}`);
+      }
+
+      const firstResponseData = await responseFirstAPI.json();
+
+      // Second API call
+      const cmdSecondAPI = selectedOption.value; // Assuming selectedOption.value is "ncs -g 44 | 11080"
+
+      const responseSecondAPI = await fetch(
+        "https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=9", // Replace with the actual second endpoint URL
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cmd: cmdSecondAPI }),
+        }
+      );
+
+      if (!responseSecondAPI.ok) {
+        throw new Error(`Network response was not ok: ${responseSecondAPI.status}`);
+      }
+
+      const secondResponseData = await responseSecondAPI.json();
+
+      // Update state or perform any other actions with the response data
+      updatePreferredOcean({
+        selectedOption,
+        firstResponseData,
+        secondResponseData,
+      });
+
+      
+    } catch (error) {
+      console.error("Error in API request:", error);
+    }setIsModalOpen(false);
   };
 
   const handleCancel = () => {
@@ -27,29 +79,8 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
     handleSelectChange(value, option.label);
   };
 
-  const onApply = async () => {
-    try {
-      // Fetch first response
-      const response1 = await fetch("/datas/statusData/firstresponse.json");
-      const data1 = await response1.json();
-
-      // Fetch second response
-      const response2 = await fetch("/datas/statusData/secondresponse.json");
-      const data2 = await response2.json();
-
-      // Call the updatePreferredOcean function with the selected option and response data
-      updatePreferredOcean({
-        selectedOption,
-        firstResponseData: data1,
-        secondResponseData: data2,
-      });
-
-      // Close the modal
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error in API request:", error);
-      // Handle error if needed
-    }
+  const onApply = () => {
+    handleOk();
   };
 
   return (
@@ -108,6 +139,7 @@ const PopupStatus = ({ handleSelectChange, updatePreferredOcean }) => {
 PopupStatus.propTypes = {
   handleSelectChange: PropTypes.func.isRequired,
   updatePreferredOcean: PropTypes.func.isRequired,
+  preferredOcean: PropTypes.string,
 };
 
 export default PopupStatus;

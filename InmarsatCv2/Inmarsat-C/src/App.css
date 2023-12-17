@@ -208,7 +208,7 @@
   margin-top: 16px !important;
   width: 227px;
   height: 48px;
-  border: 1.2px solid #555555 !important;
+  border: 1.2px solid #DCDCDC !important;
   border-radius: 6px !important;
 }
 
@@ -233,14 +233,14 @@
 
 .btn {
   margin-left: 16px !important;
-  border: 1.2px solid #555555 !important;
+  border: 1.2px solid #DCDCDC !important;
   height: 48px !important;
   font-weight: bold !important;
 }
 
 .rangepickerformat {  
   height: 48px !important;
-  border: 1.2px solid #555555 !important;
+  border: 1.2px solid #DCDCDC !important;
 }
 
 .popup-modal {
@@ -290,7 +290,7 @@
 
 .submitbtn{
     margin-left: 16px !important;
-    border: 1.2px solid #555555 !important;
+    border: 1.2px solid #DCDCDC !important;
     height: 48px !important;
     font-weight: bold !important;
 }
@@ -300,11 +300,16 @@
     margin-left: auto !important;
     margin-right: auto !important;
     display: block !important;
-    border: 1.2px solid #555555 !important;
+    border: 1.2px solid #DCDCDC !important;
     height: 48px !important;
     font-weight: bold !important;
   }
 }
 
+.radiotitle { 
+  text-align: left;
+  padding-left: 30px;
+  padding-bottom: 10px !important;
+}
 
 

@@ -1,3 +1,23 @@
+.ant-table-container {
+  border-radius: 0 !important;
+  border-left: 1px solid #DCDCDC !important;
+  border-top: 1px solid #DCDCDC !important;
+  overflow: auto; /* Add overflow property to enable horizontal scrolling if needed */
+}
+ 
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #DCDCDC !important;
+  border-right: 1px solid #DCDCDC !important; /* Add border-bottom to both header and body cells */
+}
+
+.ant-table-thead > tr > th {
+  border-right: 1px solid #DCDCDC !important; /* Add border-bottom to the table header cells */
+}
+
+.even-row {
+  background-color: #F9F9F9 !important;
+  border-radius: 0 !important;
+}
 .ant-table-cell {
   border-radius: 0 !important;
   text-align: center !important;
@@ -28,10 +48,6 @@
   white-space: normal; /* Allow text to wrap within the "Content" column */
 }
 
-.even-row {
-  background-color: rgba(85, 85, 85, 0.15);
-  border-radius: 0 !important;
-}
 
 @media screen and (max-width: 768px) {
   .titletbl {

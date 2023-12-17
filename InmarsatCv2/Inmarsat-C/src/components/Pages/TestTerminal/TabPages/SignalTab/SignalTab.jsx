@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../../../../../App.css";
 import DropdownSignal from "./DropdownSignal";
@@ -8,9 +8,11 @@ import SignalLevel from "./SignalLevel";
 function SignalTab({ selectedTerminal, activeTab }) {
   const [selectedRange, setSelectedRange] = useState(null);
   const [showSignal, setShowSignal] = useState(false);
+  const [resolution, setResolution] = useState(null); // Add resolution state
 
-  const handleRangePickerChange = (range) => {
+  const handleRangePickerChange = (range, resolution) => {
     setSelectedRange(range);
+    setResolution(resolution); // Set the resolution parameter
     setShowSignal(true);
   };
 
@@ -33,6 +35,7 @@ function SignalTab({ selectedTerminal, activeTab }) {
               selectedRange={selectedRange}
               selectedTerminal={selectedTerminal}
               activeTab={activeTab}
+              resolution={resolution}
             />
           </div>
         </div>

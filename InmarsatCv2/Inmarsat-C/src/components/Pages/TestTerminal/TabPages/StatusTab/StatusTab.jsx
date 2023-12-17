@@ -5,31 +5,7 @@ import PopupStatus from "../../../../Popup/PopupStatus";
 function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isInitialRender, setIsInitialRender] = useState(true);
-
-  const fetchJsonDataXHR = () => {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      const url = `datas/statusData/statustabbatamData.json`;
-
-      xhr.open("GET", url, true);
-
-      xhr.onload = function () {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          const data = JSON.parse(xhr.responseText);
-          resolve(data);
-        } else {
-          reject(new Error(`XHR request failed with status ${xhr.status}`));
-        }
-      };
-
-      xhr.onerror = function () {
-        reject(new Error("XHR request failed"));
-      };
-
-      xhr.send();
-    });
-  };
+  const [isInitialRender, setIsInitialRender] = useState(true); 
 
   useEffect(() => {
     const fetchData = () => {
@@ -42,7 +18,7 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
       const xhr = new XMLHttpRequest();
       xhr.open(
         "GET",
-        `datas/statusData/statustabbatamData.json`,
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`,
         true
       );
 
@@ -94,7 +70,7 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
   };
 
   const getProperties = (data) => {
-    const { lastResponse, ...otherProperties } = data;
+    const {...otherProperties } = data;
 
     return Object.entries(otherProperties).map(([key, value]) => (
       <tr key={key}>
@@ -105,14 +81,15 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
   };
 
   const handleSelectChange = (value, label) => {
+    // Save the preferred ocean to local storage
+    localStorage.setItem('preferredOcean', label);
     setPreferredOcean(label);
   };
 
-  const updatePreferredOcean = async ({
-    selectedOption,
-    firstResponseData,
-    secondResponseData,
-  }) => {
+  useEffect(() => {
+  }, [setPreferredOcean]);
+
+  const updatePreferredOcean = async ({ selectedOption }) => {
     const itemToUpdate = jsonData.find((item) => item.dest === selectedTerminal);
 
     if (!itemToUpdate) {
@@ -128,13 +105,18 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
       },
     };
 
+    const queryParams = new URLSearchParams({
+      dest: selectedTerminal,
+    });
+
     try {
       const response = await fetch(
-        `datas/statusData/statustabbatamData.json`,
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?${queryParams}`,
         {
-          method: "POST", // Use POST for updates
-          headers: {},
-          body: JSON.stringify(updatedItem),
+          method: "GET", // Use GET for updates (not recommended)
+          headers: {
+            // Add headers if needed
+          },
         }
       );
 
@@ -198,7 +180,7 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
 StatusTab.propTypes = {
   selectedTerminal: PropTypes.number,
   activeTab: PropTypes.string,
-  setPreferredOcean: PropTypes.func.isRequired, // Ensure setPreferredOcean is required
+  setPreferredOcean: PropTypes.func.isRequired,
 };
 
 export default StatusTab;

@@ -11,10 +11,17 @@ function Emailform({ preferredOcean, selectedTerminal }) {
 
   const onFinish = async (values) => {
     try {
+      // Fetch email_les_id from the provided URL
+      const configResponse = await axios.get(
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/config?dest=${selectedTerminal}`
+      );
+
+      const emailLesId = configResponse.data.email_les_id;
+
       // If the radio button is checked, modify the subject
       if (values.appendInfo) {
         const currentTimestamp = moment().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
-        values.subject += ` | ${preferredOcean} at ${currentTimestamp}`;
+        values.subject += ` | ${preferredOcean} | [LES ${emailLesId}] at ${currentTimestamp}`;
       }
 
       setLoading(true);
@@ -26,7 +33,6 @@ function Emailform({ preferredOcean, selectedTerminal }) {
           dest: values.dest,
           subject: values.subject,
           body: values.body,
-          appendInfo: values.appendInfo,
         }
       );
 
@@ -37,13 +43,13 @@ function Emailform({ preferredOcean, selectedTerminal }) {
     } finally {
       setLoading(false);
       // Reset specific form fields
-      form.resetFields(["dest", "subject", "body", "appendInfo"]);
+      form.resetFields(["dest", "subject", "body"]);
       console.log("Form reset successfully!");
     }
   };
 
   return (
-    <Form onFinish={onFinish} layout="vertical">
+    <Form onFinish={onFinish} layout="vertical" form={form}>
       <Form.Item
         label="Email Destination"
         name="dest"
@@ -81,14 +87,14 @@ function Emailform({ preferredOcean, selectedTerminal }) {
             initialValue={false}
           >
             <Radio className="radio-text" value={true}>
-              Append network info and timestamp into email subject
+              Append network info and timestamp into email subject | ({preferredOcean}) | LES 
             </Radio>
           </Form.Item>
         </div>
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={loading}>
           Send
         </Button>
       </Form.Item>

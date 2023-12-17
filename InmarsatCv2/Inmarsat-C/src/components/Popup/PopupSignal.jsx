@@ -1,16 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "../../App.css";
 import moment from "moment";
 import PropTypes from "prop-types";
-import {
-  Button,
-  Modal,
-  DatePicker,
-  Radio,
-  Space,
-  Select,
-  InputNumber,
-} from "antd";
+import { Button, Modal, DatePicker, Radio, Space, Select, InputNumber } from "antd";
 
 const { RangePicker } = DatePicker;
 
@@ -23,7 +15,6 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   const [selectValue, setSelectValue] = useState(null);
 
   const onChangeNumber = (value) => {
-    console.log("changed", value);
     setResolution(value);
   };
 
@@ -46,6 +37,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   const onApply = () => {
     if (dateValue) {
       setOuterDate(dateValue);
+      onRangePickerChange(dateValue, resolution); // Pass resolution to onRangePickerChange
       handleCancel();
     }
   };
@@ -53,7 +45,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   const onSubmit = async () => {
     if (dateValue) {
       onShowSignal();
-      onRangePickerChange(dateValue);
+      onRangePickerChange(dateValue, resolution); // Pass resolution to onRangePickerChange
     }
   };
 
@@ -176,23 +168,20 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
               />
             </Space>
           </div>
-          <div>
-            <div className="radiobtn">
-              <Radio className="radio-text" value={4}>
-                Resolution
-              </Radio>
-            </div>
-            <Space size={12}>
-              <InputNumber
-                className="datepicker-format"
-                min={0}
-                disabled={radioValue !== 4}
-                onChange={onChangeNumber}
-                placeholder="Resolution (Second)"
-              />
-            </Space>
-          </div>
         </Radio.Group>
+        <div>
+          <div className="radiotitle">
+            <div className="radio-text">Resolution</div>
+          </div>
+          <Space size={12}>
+            <InputNumber
+              className="datepicker-format"
+              min={0}
+              onChange={onChangeNumber}
+              placeholder="Resolution (Second)"
+            />
+          </Space>
+        </div>
       </Modal>
       <Button className="submitbtn" onClick={onSubmit}>
         Submit

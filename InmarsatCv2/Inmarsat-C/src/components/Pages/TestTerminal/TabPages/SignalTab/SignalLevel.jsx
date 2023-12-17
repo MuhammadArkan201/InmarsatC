@@ -22,7 +22,7 @@ ChartJS.register(
   Legend
 );
 
-function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
+function SignalLevel({ selectedRange, selectedTerminal, activeTab, resolution }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -38,11 +38,12 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
       return new Promise((resolve, reject) => {
         const startDate = selectedRange[0] ? Math.floor(selectedRange[0].unix()) : '';
         const endDate = selectedRange[1] ? Math.floor(selectedRange[1].unix()) : '';
+        const resolutionParam = resolution ? `${resolution}` : '';
     
         const xhr = new XMLHttpRequest();
         xhr.open(
           "GET",
-          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}&start=${startDate}&end=${endDate}`,
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}&start=${startDate}&end=${endDate}&bucket=${resolutionParam}`,
           true
         );
     
@@ -64,7 +65,6 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
         xhr.send();
       });
     };
-    
 
     const fetchData = async () => {
       if (!isInitialRender && selectedTerminal !== null) {
@@ -84,7 +84,7 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
     };
 
     fetchData();
-  }, [selectedRange, selectedTerminal, isInitialRender, activeTab]);
+  }, [selectedRange, selectedTerminal, isInitialRender, activeTab, resolution]);
 
   if (
     selectedRange &&
@@ -98,10 +98,8 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
     const startTimestamp = startDate.unix();
     const endTimestamp = endDate.unix();
 
-    // Flatten the array of timestamp-value pairs
     const flattenedData = jsonData.flatMap((item) => item.data);
 
-    // Filter data based on the selected date range
     const filteredData = flattenedData.filter(
       (pair) => pair[0] >= startTimestamp && pair[0] <= endTimestamp
     );
@@ -111,7 +109,6 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
         const epochTimestamp = pair[0];
         const date = new Date(epochTimestamp * 1000);
 
-        // Format date, hour, and minute
         const formattedDate = date.toLocaleDateString("en-US");
         const formattedTime = date.toLocaleTimeString("en-US", {
           hour: "2-digit",
@@ -162,7 +159,6 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab }) {
         responsive: true,
       };
 
-      // Dynamically set the container width if there are more than 10 labels
       const containerWidth = labels.length > 10 ? labels.length * 50 : null;
 
       return (
@@ -182,6 +178,7 @@ SignalLevel.propTypes = {
   selectedRange: PropTypes.array,
   selectedTerminal: PropTypes.number,
   activeTab: PropTypes.string,
+  resolution: PropTypes.number,
 };
 
 export default SignalLevel;

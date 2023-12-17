@@ -165,7 +165,7 @@ const EgcTable = ({ rangePickerValue, tableData, selectedTerminal }) => {
   }, [rangePickerValue, tableData]);
 
   const modalContent = messagePopupData ? (
-    <div>
+    <div className="box">
       {messagePopupData[3].split("\n").map((line, index) => (
         <p key={index}>{line}</p>
       ))}
@@ -173,6 +173,8 @@ const EgcTable = ({ rangePickerValue, tableData, selectedTerminal }) => {
   ) : (
     <div>No data available</div>
   );
+
+  const modalWidth = "50%";
   
   const totalRecords =
     apiResponseData.count ||
@@ -204,10 +206,12 @@ const EgcTable = ({ rangePickerValue, tableData, selectedTerminal }) => {
         />
         <Modal
           className="msg-popup-modal"
-          title="Message"
+          title="Messages"
           open={open}
           onCancel={handleModalCancel}
           footer={null}
+          width={modalWidth} // Set the width here
+          centered={true}
         >
           {modalContent}
         </Modal>
