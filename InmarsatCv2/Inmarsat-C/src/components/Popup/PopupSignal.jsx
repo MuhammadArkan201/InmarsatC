@@ -171,7 +171,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
         </Radio.Group>
         <div>
           <div className="radiotitle">
-            <div className="radio-text">Resolution</div>
+            <div className="radio-text">Resolution (Second)</div>
           </div>
           <Space size={12}>
             <InputNumber
@@ -179,11 +179,12 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
               min={0}
               onChange={onChangeNumber}
               placeholder="Resolution (Second)"
+              defaultValue={300}
             />
           </Space>
         </div>
       </Modal>
-      <Button className="submitbtn" onClick={onSubmit}>
+      <Button className="submitbtn" onClick={onSubmit} disabled={!dateValue}>
         Submit
       </Button>
     </>

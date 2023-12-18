@@ -6,7 +6,8 @@ import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
 const PopupStatus = ({
   handleSelectChange,
   updatePreferredOcean,
-  preferredOcean,
+  preferredOcean, // Rename this to selectedOption
+  selectedTerminal,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(preferredOcean || "");
@@ -18,10 +19,10 @@ const PopupStatus = ({
   const handleOk = async () => {
     try {
       // First API call
-      const cmdFirstAPI = "set o-" + selectedOption.charAt(0);
+      const cmdFirstAPI = "set o-" + selectedOption.label.charAt(0);
 
       const responseFirstAPI = await fetch(
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=9`,
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`,
         {
           method: "POST",
           headers: {
@@ -38,10 +39,10 @@ const PopupStatus = ({
       const firstResponseData = await responseFirstAPI.json();
 
       // Second API call
-      const cmdSecondAPI = selectedOption.value; // Assuming selectedOption.value is "ncs -g 44 | 11080"
+      const cmdSecondAPI = selectedOption.value.split(',')[1]?.trim(); // Extract the command part
 
       const responseSecondAPI = await fetch(
-        "https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=9", // Replace with the actual second endpoint URL
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`,
         {
           method: "POST",
           headers: {
@@ -58,16 +59,17 @@ const PopupStatus = ({
       const secondResponseData = await responseSecondAPI.json();
 
       // Update state or perform any other actions with the response data
-      updatePreferredOcean({
+      updatePreferredOcean((prevPreferredOcean) => ({
         selectedOption,
         firstResponseData,
         secondResponseData,
-      });
-
-      
+      }));
     } catch (error) {
       console.error("Error in API request:", error);
-    }setIsModalOpen(false);
+    }
+
+    // Close the modal after processing the API calls
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
@@ -75,7 +77,10 @@ const PopupStatus = ({
   };
 
   const onChange = (value, option) => {
-    setSelectedOption(option.label);
+    // Update the selected option state
+    setSelectedOption((prevSelectedOption) => option);
+
+    // Call the handler with the value and label
     handleSelectChange(value, option.label);
   };
 
@@ -108,8 +113,7 @@ const PopupStatus = ({
       </Button>
       <Modal
         className="stspopup"
-        open={isModalOpen}
-        onOk={handleOk}
+        visible={isModalOpen}
         onCancel={handleCancel}
         closable={false}
         footer={[
@@ -137,6 +141,7 @@ const PopupStatus = ({
 };
 
 PopupStatus.propTypes = {
+  selectedTerminal: PropTypes.number,
   handleSelectChange: PropTypes.func.isRequired,
   updatePreferredOcean: PropTypes.func.isRequired,
   preferredOcean: PropTypes.string,

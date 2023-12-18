@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Radio, Button } from "antd";
+import { Form, Input, Checkbox , Button } from "antd";
 import axios from "axios";
 import moment from "moment";
 import PropTypes from "prop-types";
@@ -11,21 +11,6 @@ function Emailform({ preferredOcean, selectedTerminal }) {
 
   const onFinish = async (values) => {
     try {
-      // Fetch email_les_id from the provided URL
-      const configResponse = await axios.get(
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/config?dest=${selectedTerminal}`
-      );
-
-      const emailLesId = configResponse.data.email_les_id;
-
-      // If the radio button is checked, modify the subject
-      if (values.appendInfo) {
-        const currentTimestamp = moment().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
-        values.subject += ` | ${preferredOcean} | [LES ${emailLesId}] at ${currentTimestamp}`;
-      }
-
-      setLoading(true);
-
       // Send a POST request using Axios
       const response = await axios.post(
         `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/email?dest=${selectedTerminal}`,
@@ -80,15 +65,16 @@ function Emailform({ preferredOcean, selectedTerminal }) {
           as possible for the email body and keep the subject empty to reduce
           data usage.
         </p>
-        <div className="radiobtn">
+        <div className="checkbox">
           <Form.Item
             name="appendInfo"
             valuePropName="checked"
-            initialValue={false}
+            initialValue={true}
           >
-            <Radio className="radio-text" value={true}>
-              Append network info and timestamp into email subject | ({preferredOcean}) | LES 
-            </Radio>
+            <Checkbox className="checkbox-text">
+              Append network info and timestamp into email subject | (
+              {preferredOcean}) | LES
+            </Checkbox>
           </Form.Item>
         </div>
       </Form.Item>

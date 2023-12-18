@@ -5,7 +5,7 @@ import PopupStatus from "../../../../Popup/PopupStatus";
 function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
   const [jsonData, setJsonData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isInitialRender, setIsInitialRender] = useState(true); 
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
   useEffect(() => {
     const fetchData = () => {
@@ -29,11 +29,7 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
               const response = JSON.parse(xhr.responseText);
               resolve(response);
             } else {
-              reject(
-                new Error(
-                  `Network response was not ok: ${xhr.status}`
-                )
-              );
+              reject(new Error(`Network response was not ok: ${xhr.status}`));
             }
           }
         };
@@ -70,7 +66,7 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
   };
 
   const getProperties = (data) => {
-    const {...otherProperties } = data;
+    const { ...otherProperties } = data;
 
     return Object.entries(otherProperties).map(([key, value]) => (
       <tr key={key}>
@@ -82,15 +78,16 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
 
   const handleSelectChange = (value, label) => {
     // Save the preferred ocean to local storage
-    localStorage.setItem('preferredOcean', label);
+    localStorage.setItem("preferredOcean", label);
     setPreferredOcean(label);
   };
 
-  useEffect(() => {
-  }, [setPreferredOcean]);
+  useEffect(() => {}, [setPreferredOcean]);
 
   const updatePreferredOcean = async ({ selectedOption }) => {
-    const itemToUpdate = jsonData.find((item) => item.dest === selectedTerminal);
+    const itemToUpdate = jsonData.find(
+      (item) => item.dest === selectedTerminal
+    );
 
     if (!itemToUpdate) {
       console.error("Item not found for update");
@@ -109,31 +106,38 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
       dest: selectedTerminal,
     });
 
-    try {
-      const response = await fetch(
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?${queryParams}`,
-        {
-          method: "GET", // Use GET for updates (not recommended)
-          headers: {
-            // Add headers if needed
-          },
+    const xhr = new XMLHttpRequest();
+    xhr.open(
+      "GET",
+      `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?${queryParams}`,
+      true
+    );
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          console.log("Preferred Ocean Updated Successfully");
+          setJsonData((prevData) =>
+            prevData.map((item) =>
+              item.dest === selectedTerminal ? updatedItem : item
+            )
+          );
+          setPreferredOcean(selectedOption);
+        } else {
+          console.error(
+            `Network response was not ok: ${xhr.status}`,
+            xhr.statusText
+          );
         }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status}`);
       }
+    };
 
-      console.log("Preferred Ocean Updated Successfully");
-      setJsonData((prevData) =>
-        prevData.map((item) =>
-          item.dest === selectedTerminal ? updatedItem : item
-        )
-      );
-      setPreferredOcean(selectedOption);
-    } catch (error) {
-      console.error("Error updating preferred ocean:", error);
-    }
+    xhr.onerror = function () {
+      console.error("XHR request failed");
+    };
+
+    xhr.send();
   };
 
   return (
@@ -167,6 +171,7 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
         <div className="head-content">Select a Region in the Ocean</div>
         <div>
           <PopupStatus
+          selectedTerminal={selectedTerminal}
             handleSelectChange={handleSelectChange}
             updatePreferredOcean={updatePreferredOcean}
             preferredOcean={setPreferredOcean} // Updated to use setPreferredOcean directly

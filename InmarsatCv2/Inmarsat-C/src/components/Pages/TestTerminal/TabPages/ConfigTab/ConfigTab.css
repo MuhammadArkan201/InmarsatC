@@ -1,5 +1,1 @@
-
-.custom-placeholder::placeholder {
-    color: black;
-  }
-  
+.labelconfig .ant-form-item-label  {text-align: center ;}

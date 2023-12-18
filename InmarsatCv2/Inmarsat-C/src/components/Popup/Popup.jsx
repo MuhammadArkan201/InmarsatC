@@ -167,7 +167,7 @@
             </div>
           </Radio.Group>
         </Modal>
-        <Button className="submitbtn" onClick={onSubmit}>
+        <Button className="submitbtn" onClick={onSubmit} disabled={!dateValue}>
           Submit
         </Button>
       </>

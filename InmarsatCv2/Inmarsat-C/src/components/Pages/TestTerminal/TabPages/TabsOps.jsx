@@ -14,7 +14,7 @@ import ConfigTab from "./ConfigTab/ConfigTab";
 const { TabPane } = Tabs;
 
 function TabsOps() {
-  const [preferredOcean, setPreferredOcean] = useState(" ");
+  const [preferredOcean, setPreferredOcean] = useState("");
   const [signalValue, setSignalValue] = useState(null);
   const [selectedTerminal, setSelectedTerminal] = useState(1);
   const [isInitialRender, setIsInitialRender] = useState(true);
@@ -27,27 +27,27 @@ function TabsOps() {
           const xhr = new XMLHttpRequest();
           xhr.open(
             "GET",
-            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}`,
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`,
             true
           );
-
+    
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
               if (xhr.status === 200) {
                 const jsonData = JSON.parse(xhr.responseText);
-                const lastDataPoint = jsonData[0]?.data?.slice(-1)[0] ?? null;
-                const signal = lastDataPoint ? lastDataPoint[1] : null;
+                const lastDataPoint = jsonData[0]?.data ?? null;
+                const signal = lastDataPoint ? lastDataPoint.signal : null;
                 setSignalValue(signal);
               } else {
                 console.error(`Network response was not ok: ${xhr.status}`);
               }
             }
           };
-
+    
           xhr.onerror = function () {
             console.error("There was an error with the XHR request");
           };
-
+    
           xhr.send();
         }
       } catch (error) {
@@ -56,6 +56,7 @@ function TabsOps() {
         setIsInitialRender(false);
       }
     };
+    
 
     fetchData();
 
