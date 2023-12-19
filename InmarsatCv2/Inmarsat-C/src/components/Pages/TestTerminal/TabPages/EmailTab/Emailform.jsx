@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Checkbox, Button } from "antd";
 import axios from "axios";
+import moment from "moment";
 import PropTypes from "prop-types";
 
 function Emailform({ selectedTerminal, activeTab }) {
@@ -44,6 +45,11 @@ function Emailform({ selectedTerminal, activeTab }) {
   const onFinish = async (values) => {
     try {
       // Send a POST request using Axios
+      if (values.appendInfo) {
+        const currentTimestamp = moment().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+        values.subject += `| OR: ${tdmOrigin} | LES: ${emailLesId} | ${currentTimestamp}`;
+      }
+
       const response = await axios.post(
         `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/email?dest=${selectedTerminal}`,
         {
