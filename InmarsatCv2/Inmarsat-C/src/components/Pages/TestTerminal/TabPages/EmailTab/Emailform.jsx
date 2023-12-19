@@ -47,7 +47,7 @@ function Emailform({ selectedTerminal, activeTab }) {
       // Send a POST request using Axios
       if (values.appendInfo) {
         const currentTimestamp = moment().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
-        values.subject += `| OR: ${tdmOrigin} | LES: ${emailLesId} | ${currentTimestamp}`;
+        values.subject += `| OR: ${tdmOrigin} LES: ${emailLesId} at ${currentTimestamp}`;
       }
 
       const response = await axios.post(
