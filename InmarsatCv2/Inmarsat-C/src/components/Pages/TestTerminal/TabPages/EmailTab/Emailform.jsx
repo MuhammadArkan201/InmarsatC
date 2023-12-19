@@ -1,13 +1,45 @@
-import React, { useState } from "react";
-import { Form, Input, Checkbox , Button } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Checkbox, Button } from "antd";
 import axios from "axios";
-import moment from "moment";
 import PropTypes from "prop-types";
 
-function Emailform({ preferredOcean, selectedTerminal }) {
+function Emailform({ selectedTerminal, activeTab }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [emailLesId, setEmailLesId] = useState(null);
+  const [tdmOrigin, setTdmOrigin] = useState(null);
+  const [isInitialRender, setIsInitialRender] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (activeTab === "Emailtab" && selectedTerminal !== null) {
+          // Fetch email_les_id
+          const emailConfigResponse = await axios.get(
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/config?dest=${selectedTerminal}`
+          );
+          const emailConfigData = emailConfigResponse.data[0]?.data;
+          setEmailLesId(emailConfigData?.email_les_id);
+
+          // Fetch tdmOrigin
+          const statusResponse = await axios.get(
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/status?dest=${selectedTerminal}`
+          );
+          const statusData = statusResponse.data[0]?.data;
+          setTdmOrigin(statusData?.tdmOrigin);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    };
+
+    if (!isInitialRender) {
+      fetchData();
+    }
+
+    setIsInitialRender(false);
+  }, [selectedTerminal, isInitialRender, activeTab]); // Update dependencies
 
   const onFinish = async (values) => {
     try {
@@ -72,8 +104,7 @@ function Emailform({ preferredOcean, selectedTerminal }) {
             initialValue={true}
           >
             <Checkbox className="checkbox-text">
-              Append network info and timestamp into email subject | (
-              {preferredOcean}) | LES
+              {`Append network info and timestamp into email subject | OR: ${tdmOrigin} | LES: ${emailLesId}`}
             </Checkbox>
           </Form.Item>
         </div>
@@ -89,8 +120,8 @@ function Emailform({ preferredOcean, selectedTerminal }) {
 }
 
 Emailform.propTypes = {
-  preferredOcean: PropTypes.string,
   selectedTerminal: PropTypes.number,
+  activeTab: PropTypes.string.isRequired,
 };
 
 export default Emailform;

@@ -2,12 +2,13 @@ import React from 'react'
 import Emailform from './Emailform'
 import PropTypes from "prop-types";
 
-function EmailTab({ preferredOcean, selectedTerminal }) {
+function EmailTab({ selectedTerminal, activeTab }) {
+  console.log("activeTab in EmailTab:", activeTab); // Log for debugging
   return (
     <div className="contents">
         <div className="content">
             <div className="head-content">Send Email</div>
-            <div><Emailform preferredOcean={preferredOcean} selectedTerminal={selectedTerminal} /></div>
+            <div><Emailform activeTab={activeTab} selectedTerminal={selectedTerminal} /></div>
         </div>
     </div>
   )
@@ -16,6 +17,7 @@ function EmailTab({ preferredOcean, selectedTerminal }) {
 EmailTab.propTypes = {
   preferredOcean: PropTypes.string, // Add this line
   selectedTerminal: PropTypes.number,
+  activeTab: PropTypes.string,
 };
 
 export default EmailTab

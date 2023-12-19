@@ -6,7 +6,7 @@ import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
 const PopupStatus = ({
   handleSelectChange,
   updatePreferredOcean,
-  preferredOcean, // Rename this to selectedOption
+  preferredOcean,
   selectedTerminal,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +19,7 @@ const PopupStatus = ({
   const handleOk = async () => {
     try {
       // First API call
-      const cmdFirstAPI = "set o-" + selectedOption.label.charAt(0);
+      const cmdFirstAPI = "set o-" + selectedOption.charAt(0);
 
       const responseFirstAPI = await fetch(
         `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`,
@@ -39,10 +39,10 @@ const PopupStatus = ({
       const firstResponseData = await responseFirstAPI.json();
 
       // Second API call
-      const cmdSecondAPI = selectedOption.value.split(',')[1]?.trim(); // Extract the command part
+      const cmdSecondAPI =  selectedOption.value; // Assuming selectedOption.value is "ncs -g 44 | 11080"
 
       const responseSecondAPI = await fetch(
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`,
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`, // Replace with the actual second endpoint URL
         {
           method: "POST",
           headers: {
@@ -59,16 +59,16 @@ const PopupStatus = ({
       const secondResponseData = await responseSecondAPI.json();
 
       // Update state or perform any other actions with the response data
-      updatePreferredOcean((prevPreferredOcean) => ({
+      updatePreferredOcean({
         selectedOption,
         firstResponseData,
         secondResponseData,
-      }));
+      });
+
     } catch (error) {
       console.error("Error in API request:", error);
     }
-
-    // Close the modal after processing the API calls
+    
     setIsModalOpen(false);
   };
 
@@ -77,10 +77,7 @@ const PopupStatus = ({
   };
 
   const onChange = (value, option) => {
-    // Update the selected option state
-    setSelectedOption((prevSelectedOption) => option);
-
-    // Call the handler with the value and label
+    setSelectedOption(option.label);
     handleSelectChange(value, option.label);
   };
 
@@ -113,7 +110,8 @@ const PopupStatus = ({
       </Button>
       <Modal
         className="stspopup"
-        visible={isModalOpen}
+        open={isModalOpen}
+        onOk={handleOk}
         onCancel={handleCancel}
         closable={false}
         footer={[

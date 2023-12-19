@@ -30,7 +30,7 @@ function TabsOps() {
             `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`,
             true
           );
-    
+
           xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
               if (xhr.status === 200) {
@@ -43,11 +43,11 @@ function TabsOps() {
               }
             }
           };
-    
+
           xhr.onerror = function () {
             console.error("There was an error with the XHR request");
           };
-    
+
           xhr.send();
         }
       } catch (error) {
@@ -56,7 +56,6 @@ function TabsOps() {
         setIsInitialRender(false);
       }
     };
-    
 
     fetchData();
 
@@ -125,7 +124,6 @@ function TabsOps() {
             <EmailTab
               selectedTerminal={selectedTerminal}
               activeTab={activeTab}
-              preferredOcean={preferredOcean}
             />
           </div>
         </TabPane>
@@ -136,11 +134,14 @@ function TabsOps() {
           <div>tab content Cmd tab</div>
         </TabPane>
         <TabPane key="Configtab" tab="Config">
-          <div> <ConfigTab
+          <div>
+            {" "}
+            <ConfigTab
               selectedTerminal={selectedTerminal}
               activeTab={activeTab}
               preferredOcean={preferredOcean}
-            /></div>
+            />
+          </div>
         </TabPane>
         <TabPane key="Signaltab" tab={`Signal: ${signalValue}`}>
           <div>
