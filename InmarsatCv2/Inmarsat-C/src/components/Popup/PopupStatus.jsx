@@ -6,11 +6,25 @@ import "../Pages/TestTerminal/TabPages/StatusTab/PopupStatus.css";
 const PopupStatus = ({
   handleSelectChange,
   updatePreferredOcean,
-  preferredOcean,
   selectedTerminal,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(preferredOcean || "");
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const OceanOptions = [
+    { value: "", label: "Preferred Ocean Region" },
+    { value: "W,ncs -g 44 | 11080", label: "West Atlantic" },
+    { value: "E,ncs -g 144 | 12580", label: "East Atlantic" },
+    { value: "P,ncs -g 244 | 12580", label: "Pacific" },
+    { value: "I,ncs -g 344 | 10840", label: "Indian" },
+    { value: "N", label: "None" },
+  ];
+
+  const onChange = (value) => {
+    const selectedOption = OceanOptions.find(option => option.value === value);
+    setSelectedOption(selectedOption);
+    handleSelectChange(value, selectedOption.label);
+  };
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -19,7 +33,7 @@ const PopupStatus = ({
   const handleOk = async () => {
     try {
       // First API call
-      const cmdFirstAPI = "set o-" + selectedOption.charAt(0);
+      const cmdFirstAPI = "set o-" + selectedOption.label.charAt(0);
 
       const responseFirstAPI = await fetch(
         `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`,
@@ -33,16 +47,18 @@ const PopupStatus = ({
       );
 
       if (!responseFirstAPI.ok) {
-        throw new Error(`Network response was not ok: ${responseFirstAPI.status}`);
+        throw new Error(
+          `Network response was not ok: ${responseFirstAPI.status}`
+        );
       }
 
       const firstResponseData = await responseFirstAPI.json();
 
       // Second API call
-      const cmdSecondAPI =  selectedOption.value; // Assuming selectedOption.value is "ncs -g 44 | 11080"
+      const cmdSecondAPI = selectedOption ? selectedOption.value.split(',')[1] || '' : '';
 
       const responseSecondAPI = await fetch(
-        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`, // Replace with the actual second endpoint URL
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/command?dest=${selectedTerminal}`,
         {
           method: "POST",
           headers: {
@@ -53,7 +69,9 @@ const PopupStatus = ({
       );
 
       if (!responseSecondAPI.ok) {
-        throw new Error(`Network response was not ok: ${responseSecondAPI.status}`);
+        throw new Error(
+          `Network response was not ok: ${responseSecondAPI.status}`
+        );
       }
 
       const secondResponseData = await responseSecondAPI.json();
@@ -64,21 +82,15 @@ const PopupStatus = ({
         firstResponseData,
         secondResponseData,
       });
-
     } catch (error) {
       console.error("Error in API request:", error);
     }
-    
+
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-  };
-
-  const onChange = (value, option) => {
-    setSelectedOption(option.label);
-    handleSelectChange(value, option.label);
   };
 
   const onApply = () => {
@@ -93,17 +105,7 @@ const PopupStatus = ({
         placeholder="Preferred Ocean Region"
         onChange={onChange}
         style={{ width: 227 }}
-        options={[
-          {
-            value: "",
-            label: "Preferred Ocean Region",
-          },
-          { value: "W,ncs -g 44 | 11080", label: "West Atlantic" },
-          { value: "E,ncs -g 144 | 12580", label: "East Atlantic" },
-          { value: "P,ncs -g 244 | 12580", label: "Pacific" },
-          { value: "I,ncs -g 344 | 10840", label: "Indian" },
-          { value: "N", label: "None" },
-        ]}
+        options={OceanOptions}
       />
       <Button className="btn" onClick={showModal}>
         Set Region

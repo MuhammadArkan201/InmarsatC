@@ -6,18 +6,19 @@ import { Button, Modal, DatePicker, Radio, Space, Select, InputNumber } from "an
 
 const { RangePicker } = DatePicker;
 
-const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
+const PopupSignal = ({ onShowSignal, onRangePickerChange, onResolutionChange }) => {
   const [open, setOpen] = useState(false);
   const [dateValue, setDateValue] = useState(null);
   const [radioValue, setRadioValue] = useState(1);
   const [outerDate, setOuterDate] = useState(null);
-  const [resolution, setResolution] = useState(null);
+  const [resolution, setResolution] = useState(300); // Default resolution is set to 300 seconds
   const [selectValue, setSelectValue] = useState(null);
 
   const onChangeNumber = (value) => {
     setResolution(value);
+    onResolutionChange(value); // Pass resolution to onResolutionChange
   };
-
+  
   const showModal = () => {
     setOpen(true);
   };
@@ -37,7 +38,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   const onApply = () => {
     if (dateValue) {
       setOuterDate(dateValue);
-      onRangePickerChange(dateValue, resolution); // Pass resolution to onRangePickerChange
+      onRangePickerChange(dateValue, resolution);
       handleCancel();
     }
   };
@@ -45,7 +46,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
   const onSubmit = async () => {
     if (dateValue) {
       onShowSignal();
-      onRangePickerChange(dateValue, resolution); // Pass resolution to onRangePickerChange
+      onRangePickerChange(dateValue, resolution);
     }
   };
 
@@ -194,6 +195,7 @@ const PopupSignal = ({ onShowSignal, onRangePickerChange }) => {
 PopupSignal.propTypes = {
   onShowSignal: PropTypes.func.isRequired,
   onRangePickerChange: PropTypes.func.isRequired,
+  onResolutionChange: PropTypes.func.isRequired,
 };
 
 export default PopupSignal;

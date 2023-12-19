@@ -93,14 +93,14 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
       console.error("Item not found for update");
       return;
     }
-
     const updatedItem = {
       ...itemToUpdate,
       data: {
         ...itemToUpdate.data,
-        preferredOcean: selectedOption,
+        preferredOcean: selectedOption ? selectedOption.label : '', // Use selectedOption.value
       },
     };
+    
 
     const queryParams = new URLSearchParams({
       dest: selectedTerminal,
@@ -171,7 +171,7 @@ function StatusTab({ selectedTerminal, activeTab, setPreferredOcean }) {
         <div className="head-content">Select a Region in the Ocean</div>
         <div>
           <PopupStatus
-          selectedTerminal={selectedTerminal}
+            selectedTerminal={selectedTerminal}
             handleSelectChange={handleSelectChange}
             updatePreferredOcean={updatePreferredOcean}
             preferredOcean={setPreferredOcean} // Updated to use setPreferredOcean directly

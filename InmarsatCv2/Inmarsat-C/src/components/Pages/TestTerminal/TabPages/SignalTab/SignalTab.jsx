@@ -8,12 +8,18 @@ import SignalLevel from "./SignalLevel";
 function SignalTab({ selectedTerminal, activeTab }) {
   const [selectedRange, setSelectedRange] = useState(null);
   const [showSignal, setShowSignal] = useState(false);
-  const [resolution, setResolution] = useState(null); // Add resolution state
+  const [resolution, setResolution] = useState(null);
 
   const handleRangePickerChange = (range, resolution) => {
     setSelectedRange(range);
-    setResolution(resolution); // Set the resolution parameter
+    setResolution(resolution);
     setShowSignal(true);
+  };
+
+  const handleResolutionChange = (resolution) => {
+    // Handle resolution change if needed in the SignalTab component
+    // For example, you can set it in a state if you need to use it later
+    setResolution(resolution);
   };
 
   return (
@@ -23,6 +29,7 @@ function SignalTab({ selectedTerminal, activeTab }) {
         <PopupSignal
           onShowSignal={() => setShowSignal(true)}
           onRangePickerChange={handleRangePickerChange}
+          onResolutionChange={handleResolutionChange} 
         />
       </div>
       {showSignal && selectedRange && (
@@ -31,7 +38,7 @@ function SignalTab({ selectedTerminal, activeTab }) {
             <DropdownSignal />
           </div>
           <div>
-            <SignalLevel
+          <SignalLevel
               selectedRange={selectedRange}
               selectedTerminal={selectedTerminal}
               activeTab={activeTab}

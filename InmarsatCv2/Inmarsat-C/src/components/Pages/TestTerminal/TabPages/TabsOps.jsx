@@ -10,6 +10,7 @@ import TerminalLoc from "./TerminalLoc";
 import TxhistoryTab from "./TxhistoryTab/TxhistoryTab";
 import EmailTab from "./EmailTab/EmailTab";
 import ConfigTab from "./ConfigTab/ConfigTab";
+import CmdTab from "./CmdTab/CmdTab";
 
 const { TabPane } = Tabs;
 
@@ -127,11 +128,11 @@ function TabsOps() {
             />
           </div>
         </TabPane>
-        <TabPane key="Send Datatab" tab="Send Data">
+        <TabPane key="SendDatatab" tab="Send Data">
           <div>tab content Send Data tab</div>
         </TabPane>
         <TabPane key="Cmdtab" tab="Cmd">
-          <div>tab content Cmd tab</div>
+          <div><CmdTab></CmdTab></div>
         </TabPane>
         <TabPane key="Configtab" tab="Config">
           <div>

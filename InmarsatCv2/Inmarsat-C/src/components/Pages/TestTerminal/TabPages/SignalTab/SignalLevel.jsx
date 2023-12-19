@@ -100,9 +100,10 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab, resolution })
 
     const flattenedData = jsonData.flatMap((item) => item.data);
 
-    const filteredData = flattenedData.filter(
-      (pair) => pair[0] >= startTimestamp && pair[0] <= endTimestamp
-    );
+    const filteredData = flattenedData.filter((pair) => {
+      const timestamp = pair[0];
+      return timestamp % resolution === 0 && timestamp >= startTimestamp && timestamp <= endTimestamp;
+    });
 
     if (filteredData.length > 0) {
       const labels = filteredData.map((pair) => {
