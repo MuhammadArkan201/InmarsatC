@@ -1,0 +1,11 @@
+.labelconfig .ant-form-item-label  {text-align:left ;}
+
+.ant-checkbox-wrapper {
+
+   }
+
+   .labelconfig p {
+    margin: 6px !important;
+  }
+  
+  .ant-form .checkbox {margin-bottom: 0px !important;}

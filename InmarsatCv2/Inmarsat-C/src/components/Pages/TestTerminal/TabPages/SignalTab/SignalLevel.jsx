@@ -43,7 +43,7 @@ function SignalLevel({ selectedRange, selectedTerminal, activeTab, resolution })
         const xhr = new XMLHttpRequest();
         xhr.open(
           "GET",
-          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}&start=${startDate}&end=${endDate}&bucket=${resolutionParam}`,
+          `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/historical_snr?dest=${selectedTerminal}`,
           true
         );
     

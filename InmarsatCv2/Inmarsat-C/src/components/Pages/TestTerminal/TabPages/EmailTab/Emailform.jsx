@@ -56,6 +56,7 @@ function Emailform({ selectedTerminal, activeTab }) {
           dest: values.dest,
           subject: values.subject,
           body: values.body,
+          
         }
       );
 

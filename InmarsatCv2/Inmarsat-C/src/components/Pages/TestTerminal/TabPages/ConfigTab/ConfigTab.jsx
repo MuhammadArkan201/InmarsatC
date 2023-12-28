@@ -15,21 +15,22 @@ function ConfigTab({ selectedTerminal, activeTab }) {
       if (activeTab !== "Configtab" || selectedTerminal === null) {
         return;
       }
-  
+
       setLoading(true);
-  
+
       try {
+        // Fetch data from the first endpoint
         const response = await fetch(
           `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/config?dest=${selectedTerminal}`
         );
-  
+
         if (!response.ok) {
           throw new Error(`Network response was not ok: ${response.status}`);
         }
-  
+
         const responseData = await response.json();
         setJsonData(responseData);
-  
+
         // Set initial form values using setFieldsValue
         form.setFieldsValue(responseData?.[0]?.data || {});
       } catch (error) {
@@ -39,36 +40,42 @@ function ConfigTab({ selectedTerminal, activeTab }) {
         setLoading(false);
       }
     };
-  
+
     if (!isInitialRender && selectedTerminal !== null) {
       fetchData();
     }
-  
+
     setIsInitialRender(false);
   }, [selectedTerminal, isInitialRender, activeTab, form]);
- 
+
   const onFinish = async (values) => {
     try {
       setLoading(true);
 
-      const formData = { data: values };
+      // Send a POST request to the second endpoint with all the form values
+      const queryParams = new URLSearchParams({
+        dest: selectedTerminal,
+      });
 
-      const response = await fetch(
-        "https://655c2821ab37729791a9ef77.mockapi.io/api/v1/config2",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        "POST",
+        `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/config2?${queryParams}`,
+        true
       );
 
-      if (!response.ok) {
-        throw new Error(`Server responded with an error: ${response.status}`);
-      }
+      xhr.setRequestHeader("Content-Type", "application/json");
 
-      console.log("Form submitted successfully");
+      xhr.onreadystatechange = function () {
+        if (xhr.status === 200 || xhr.status === 201) {
+          console.log("Data submitted successfully");
+        } else {
+          console.error("Error submitting data:", xhr.statusText);
+          setErrorMessage("An error occurred while submitting data.");
+        }
+      };
+
+      xhr.send(JSON.stringify({ data: values }));
     } catch (error) {
       console.error("Form submission error:", error.message);
       setErrorMessage("An error occurred. Please try again.");
@@ -97,7 +104,7 @@ function ConfigTab({ selectedTerminal, activeTab }) {
               <Input
                 className="inputconfig"
                 type={typeof value === "number" ? "number" : "text"}
-                defaultValue={value}
+                
               />
             </Form.Item>
           ))}

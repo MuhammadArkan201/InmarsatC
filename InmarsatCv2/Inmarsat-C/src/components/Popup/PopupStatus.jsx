@@ -144,7 +144,7 @@ PopupStatus.propTypes = {
   selectedTerminal: PropTypes.number,
   handleSelectChange: PropTypes.func.isRequired,
   updatePreferredOcean: PropTypes.func.isRequired,
-  preferredOcean: PropTypes.string,
+  preferredOcean: PropTypes.func.isRequired,
 };
 
 export default PopupStatus;

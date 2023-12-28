@@ -3,7 +3,7 @@ import Emailform from './Emailform'
 import PropTypes from "prop-types";
 
 function EmailTab({ selectedTerminal, activeTab }) {
-  console.log("activeTab in EmailTab:", activeTab); // Log for debugging
+  
   return (
     <div className="contents">
         <div className="content">

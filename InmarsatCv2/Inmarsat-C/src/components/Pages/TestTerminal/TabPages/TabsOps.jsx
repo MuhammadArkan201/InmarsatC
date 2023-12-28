@@ -1,4 +1,3 @@
-// TabsOps.jsx
 import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import StatusTab from "./StatusTab/StatusTab";
@@ -10,6 +9,7 @@ import TerminalLoc from "./TerminalLoc";
 import TxhistoryTab from "./TxhistoryTab/TxhistoryTab";
 import EmailTab from "./EmailTab/EmailTab";
 import ConfigTab from "./ConfigTab/ConfigTab";
+import SenddataTab from "./SenddataTab/SenddataTab";
 
 const { TabPane } = Tabs;
 
@@ -18,37 +18,79 @@ function TabsOps() {
   const [signalValue, setSignalValue] = useState(null);
   const [selectedTerminal, setSelectedTerminal] = useState(1);
   const [isInitialRender, setIsInitialRender] = useState(true);
-  const [activeTab, setActiveTab] = useState("Infotab"); // Add activeTab state
+  const [activeTab, setActiveTab] = useState("Infotab");
+  const [signalReadInterval, setSignalReadInterval] = useState(60 * 60 * 300);
+  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
-    const fetchData = () => {
+    const fetchData = async () => {
       try {
         if (!isInitialRender && selectedTerminal !== null) {
-          const xhr = new XMLHttpRequest();
-          xhr.open(
+          // Fetch signal data
+          const signalXhr = new XMLHttpRequest();
+          signalXhr.open(
             "GET",
             `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/snr?dest=${selectedTerminal}`,
             true
           );
 
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-              if (xhr.status === 200) {
-                const jsonData = JSON.parse(xhr.responseText);
+          signalXhr.onreadystatechange = function () {
+            if (signalXhr.readyState === 4) {
+              if (signalXhr.status === 200) {
+                const jsonData = JSON.parse(signalXhr.responseText);
                 const lastDataPoint = jsonData[0]?.data ?? null;
                 const signal = lastDataPoint ? lastDataPoint.signal : null;
                 setSignalValue(signal);
               } else {
-                console.error(`Network response was not ok: ${xhr.status}`);
+                console.error(
+                  `Signal: Network response was not ok: ${signalXhr.status}`
+                );
               }
             }
           };
 
-          xhr.onerror = function () {
-            console.error("There was an error with the XHR request");
+          signalXhr.onerror = function () {
+            console.error("Signal: There was an error with the XHR request");
           };
 
-          xhr.send();
+          signalXhr.send();
+
+          // Fetch config data
+          const configXhr = new XMLHttpRequest();
+          configXhr.open(
+            "GET",
+            `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/config?dest=${selectedTerminal}`,
+            true
+          );
+
+          configXhr.onreadystatechange = function () {
+            if (configXhr.readyState === 4) {
+              if (configXhr.status === 200) {
+                const configData = JSON.parse(configXhr.responseText);
+                const newSignalReadInterval =
+                  configData.signal_read_interval || 60 * 60 * 300;
+                setSignalReadInterval(newSignalReadInterval);
+
+                // Update the interval with the new value
+                clearInterval(intervalId);
+                const newIntervalId = setInterval(() => {
+                  fetchData();
+                }, newSignalReadInterval);
+                console.log("signal_read_interval:", newSignalReadInterval); // Log the new signal_read_interval
+                setIntervalId(newIntervalId); // Assuming you have a state variable to store the interval ID
+              } else {
+                console.error(
+                  `Config: Network response was not ok: ${configXhr.status}`
+                );
+              }
+            }
+          };
+
+          configXhr.onerror = function () {
+            console.error("Config: There was an error with the XHR request");
+          };
+
+          configXhr.send();
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -59,16 +101,16 @@ function TabsOps() {
 
     fetchData();
 
-    const intervalId = setInterval(() => {
+    const initialIntervalId = setInterval(() => {
       fetchData();
-    }, 60 * 60 * 1000);
+    }, signalReadInterval);
 
-    return () => clearInterval(intervalId);
+    return () => clearInterval(initialIntervalId);
   }, [selectedTerminal, isInitialRender]);
 
   const handleTerminalSelect = (terminalId) => {
     setSelectedTerminal(terminalId);
-    setActiveTab("Infotab"); // Switch to the "Info" tab when the terminal is selected
+    setActiveTab("Infotab");
   };
 
   return (
@@ -128,7 +170,13 @@ function TabsOps() {
           </div>
         </TabPane>
         <TabPane key="SendDatatab" tab="Send Data">
-          <div>tab content Send Data tab</div>
+          <div>
+            <SenddataTab
+              selectedTerminal={selectedTerminal}
+              activeTab={activeTab}
+              preferredOcean={preferredOcean}
+            />
+          </div>
         </TabPane>
         <TabPane key="Cmdtab" tab="Cmd">
           <div></div>

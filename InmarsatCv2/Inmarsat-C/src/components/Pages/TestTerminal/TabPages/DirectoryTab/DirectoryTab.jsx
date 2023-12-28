@@ -12,7 +12,7 @@ function DirectoryTab({ selectedTerminal, activeTab }) {
   const fetchDataXHR = (start, end) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}&start=${start}&end=${end}`;
+      const url = `https://655c2821ab37729791a9ef77.mockapi.io/api/v1/directory?dest=${selectedTerminal}`;
 
       xhr.open("GET", url, true);
 
