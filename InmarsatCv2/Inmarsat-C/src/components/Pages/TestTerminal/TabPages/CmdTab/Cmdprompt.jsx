@@ -17,7 +17,7 @@ function Cmdprompt({ selectedTerminal, setResponseData }) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ command: selectedCommand }),
+          body: JSON.stringify({ cmd: selectedCommand }),
         }
       )
         .then((response) => response.json())
