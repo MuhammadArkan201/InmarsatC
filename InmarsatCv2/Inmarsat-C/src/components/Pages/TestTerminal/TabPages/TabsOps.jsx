@@ -10,6 +10,7 @@ import TxhistoryTab from "./TxhistoryTab/TxhistoryTab";
 import EmailTab from "./EmailTab/EmailTab";
 import ConfigTab from "./ConfigTab/ConfigTab";
 import SenddataTab from "./SenddataTab/SenddataTab";
+import CmdTab from "./CmdTab/CmdTab";
 
 const { TabPane } = Tabs;
 
@@ -77,7 +78,7 @@ function TabsOps() {
                   fetchData();
                 }, newSignalReadInterval);
                 console.log("signal_read_interval:", newSignalReadInterval); // Log the new signal_read_interval
-                setIntervalId(newIntervalId); // Assuming you have a state variable to store the interval ID
+                setIntervalId(newIntervalId); // store the interval ID
               } else {
                 console.error(
                   `Config: Network response was not ok: ${configXhr.status}`
@@ -179,7 +180,9 @@ function TabsOps() {
           </div>
         </TabPane>
         <TabPane key="Cmdtab" tab="Cmd">
-          <div></div>
+          <div>
+            <CmdTab selectedTerminal={selectedTerminal} />
+          </div>
         </TabPane>
         <TabPane key="Configtab" tab="Config">
           <div>

@@ -1,11 +1,13 @@
 .labelconfig .ant-form-item-label  {text-align:left ;}
 
-.ant-checkbox-wrapper {
-
-   }
-
-   .labelconfig p {
+.labelconfig p {
     margin: 6px !important;
   }
   
   .ant-form .checkbox {margin-bottom: 0px !important;}
+
+.sumbitformbtn{
+ margin-top: 10px !important;
+}
+
+/* .Alert { margin-bottom: 15px !important;} */

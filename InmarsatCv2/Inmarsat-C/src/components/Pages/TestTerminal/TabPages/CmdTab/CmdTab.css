@@ -1,0 +1,27 @@
+.command {
+    width: 227px;
+  }
+
+  .ant-modal-body {
+    background-color: transparent !important; /* Set the background color to transparent or any other desired value */
+    padding: 0 !important; }
+  
+  .ant-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .popupstsbtn {
+    margin-left: 8px; /* Add margin to separate buttons if needed */
+  }
+
+  .respond {
+    background-color: rgb(255, 255, 255);
+    padding: 24px !important;
+    margin: 24px !important;
+    border: 1px solid #DCDCDC;
+    border-radius: 4px !important;
+    max-height: 500px; /* Set the maximum height */
+    overflow-y: auto; /* Enable vertical scrolling if the content overflows */
+  }
+  
