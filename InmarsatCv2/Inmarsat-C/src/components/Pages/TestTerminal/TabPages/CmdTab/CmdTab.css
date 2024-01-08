@@ -21,7 +21,12 @@
     margin: 24px !important;
     border: 1px solid #DCDCDC;
     border-radius: 4px !important;
-    max-height: 500px; /* Set the maximum height */
+    height: 350px !important;
+    max-height: 400px; /* Set the maximum height */
     overflow-y: auto; /* Enable vertical scrolling if the content overflows */
+  }
+
+  .prompt {
+    width: 270px !important;
   }
   

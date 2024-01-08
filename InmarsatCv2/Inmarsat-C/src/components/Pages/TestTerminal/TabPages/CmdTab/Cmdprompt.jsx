@@ -34,6 +34,7 @@ function Cmdprompt({ selectedTerminal, setResponseData }) {
   return (
     <>
       <Select
+        className="prompt"
         showSearch
         style={{
           width: 227,
@@ -65,7 +66,7 @@ function Cmdprompt({ selectedTerminal, setResponseData }) {
         ]}
       />
 
-<Button className="btn" onClick={onFinish}>
+      <Button className="btn" onClick={onFinish}>
         Send
       </Button>
     </>
